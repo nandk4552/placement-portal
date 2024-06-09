@@ -1,0 +1,141 @@
+/* .register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.register input {
+  width: 400px !important;
+}
+
+.register h1 {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 2rem;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+.register h3 {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 2rem;
+}
+
+.register-form {
+  background-color: #001529;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: rgba(0, 21, 41, 0.3) 1.95px 1.95px 2.6px;
+}
+
+.register-form label,
+.register-form p {
+  color: #fff !important;
+}
+.register-form:hover {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.register .register-form a {
+  font-weight: bolder;
+}
+.register .register-form a:hover {
+  text-decoration: underline;
+} */
+/* General styles */
+
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+  padding: 10px;
+}
+
+.register-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease-in-out;
+}
+
+.register h3 {
+  text-align: center;
+  color: #444;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.divider {
+  margin-bottom: 0 !important;
+  border: 0;
+  height: 1px;
+  background: #ddd;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.form-footer p {
+  margin: 0;
+}
+
+.link {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .register-form {
+    padding: 20px;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-footer p {
+    margin: 5px 0;
+    margin-left: 4px;
+  }
+
+  .form-footer Button {
+    width: 100%;
+  }
+}
+
+/* Floating label styles */
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input {
+  padding: 6px;
+}
+
+.ant-input:focus + .floating-label,
+.ant-input:not(:placeholder-shown) + .floating-label {
+  top: -8px;
+  left: 8px;
+  background: #fff;
+  padding: 0 4px;
+  color: #000;
+  font-size: 12px;
+}

@@ -1,5 +1,5 @@
 const adminModel = require("../models/adminModel");
-
+const bcrypt = require("bcryptjs");
 // Create admin
 const createAdmin = async (req, res) => {
   try {
@@ -52,6 +52,20 @@ const getAdminById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// get admin logged in
+const getLoggedInAdminDetails = async (req, res) => {
+  try {
+    const adminId = req.body.id;
+    const admin = await adminModel.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    admin.password = undefined;
+    res.status(200).json({ admin });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // Update admin
 const updateAdmin = async (req, res) => {
@@ -93,6 +107,56 @@ const deleteAdmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const updateAdminPasswordController = async (req, res) => {
+  try {
+    // Find admin by ID
+    const admin = await adminModel.findById(req.body.id);
+
+    // Validate if admin exists
+    if (!admin) {
+      return res.status(404).send({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    // Get old and new passwords from the request body
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      return res.status(400).send({
+        success: false,
+        message: "Please provide both old and new passwords",
+      });
+    }
+
+    // Check if the old password matches the current password
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid old password",
+      });
+    }
+
+    // Update the admin's password
+    admin.password = newPassword;
+    await admin.save();
+
+    // Send success response
+    return res.status(200).send({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      success: false,
+      message: "Error in update password API",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
   createAdmin,
@@ -100,4 +164,6 @@ module.exports = {
   getAdminById,
   updateAdmin,
   deleteAdmin,
+  getLoggedInAdminDetails,
+  updateAdminPasswordController,
 };

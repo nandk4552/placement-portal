@@ -1,0 +1,66 @@
+.ant-layout-has-sider {
+  padding: 0.2rem !important;
+}
+.ant-layout-sider-children {
+  height: 99vh !important;
+}
+
+.ant-layout-sider {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  vertical-align: middle;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.ant-icon svg {
+  font-size: 1.5rem !important;
+}
+
+.ant-layout-header {
+  background-color: #fff !important;
+  box-shadow: 0 0 3px #ccc;
+  border-radius: 0.5rem !important;
+  margin: 0.5rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.demo-logo-vertical h1 {
+  font-weight: 800 !important;
+  font-size: 2rem !important;
+  text-align: center !important;
+  color: #fff !important;
+  margin-top: 2rem !important;
+}
+
+.ant-menu-title-content,
+.ant-menu-title-content a {
+  text-decoration: none !important;
+  font-size: 1.2rem !important;
+  font-weight: 600;
+}
+
+.ant-layout-content {
+  margin: 0.5rem !important;
+  background-color: #fff !important;
+  box-shadow: 0 0 3px #ccc;
+  overflow: auto;
+}
+
+.ant-layout {
+  height: 100vh !important;
+}
+
+.side-bar-menu .anticon svg {
+  font-size: 1.25rem !important;
+  font-weight: bolder !important;
+  color: #fff !important;
+}
+.side-bar-menu .ant-menu {
+  margin-top: 2rem;
+  border-radius: 1rem;
+}

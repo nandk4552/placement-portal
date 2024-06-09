@@ -44,6 +44,8 @@ app.get("/", (req, res) => {
 });
 // authentication routes
 app.use("/api/v1/auth", require("./routes/authRoutes"));
+// user routes
+app.use("/api/v1/user", require("./routes/userRoutes"));
 // student routes
 app.use("/api/v1/student", require("./routes/studentRoutes"));
 // admin routes

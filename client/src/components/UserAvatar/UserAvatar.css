@@ -1,0 +1,22 @@
+.user-avatar-modal p {
+  font-size: 1.2rem !important;
+}
+.user-avatar-modal strong {
+  color: #001529;
+}
+.ant-modal-title {
+  font-size: 1.5rem !important;
+  font-weight: 800;
+  text-align: center;
+}
+.user-avatar {
+  cursor: pointer;
+}
+
+.user-avatar-modal {
+  margin-top: 5px !important;
+}
+
+.ant-dropdown-menu {
+  z-index: 1000; /* Ensure the dropdown appears on top */
+}
