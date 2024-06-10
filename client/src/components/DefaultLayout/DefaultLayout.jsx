@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Title from "../Title/Title";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import "./DefaultLayout.css";
+import { FaUsers } from "react-icons/fa";
 
 const { Header, Sider, Content } = Layout;
 
@@ -48,10 +49,16 @@ const DefaultLayout = ({ children }) => {
           ) : (
             <>
               <Menu.Item
-                key="/admin/manage-admin"
+                key="/admin/manage-admins"
                 icon={<FaUsersGear size={"1.5rem"} color="#ccc" />}
               >
-                <Link to="/admin/manage-admin">Admins</Link>
+                <Link to="/admin/manage-admins">Admins</Link>
+              </Menu.Item>
+              <Menu.Item
+                key="/admin/manage-students"
+                icon={<FaUsers size={"1.5rem"} color="#ccc" />}
+              >
+                <Link to="/admin/manage-students">Students</Link>
               </Menu.Item>
             </>
           )}

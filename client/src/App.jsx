@@ -10,11 +10,14 @@ import {
 import { hideLoading, showLoading } from "./redux/rootReducer";
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
+import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
-import PageNotFound from "./pages/PageNotFound/PageNotFound";
-import HomePage from "./pages/HomePage/HomePage";
-import AdminTable from "./pages/ADMIN/AdminTable/AdminTable.jsx";
+const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const AdminTable = lazy(() =>
+  import("./pages/ADMIN/AdminTable/AdminTable.jsx")
+);
 const AdminHomePage = lazy(() =>
   import("./pages/ADMIN/AdminHomePage/AdminHomePage.jsx")
 );
@@ -76,11 +79,21 @@ function Main() {
           }
         />
         <Route
-          path="/admin/manage-admin"
+          path="/admin/manage-admins"
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
                 <AdminTable />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/admin/manage-students"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <ManagegStudents />
               </Suspense>
             </ProtectedRoutes>
           }

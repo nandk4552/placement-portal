@@ -155,6 +155,9 @@ const AdminTable = () => {
 
   return (
     <DefaultLayout>
+      <div className="w-100">
+        <h1 className="header-title">Manage Admins</h1>
+      </div>
       <div style={{ textAlign: "right", marginBottom: 16 }}>
         <Button
           type="primary"
