@@ -5,6 +5,8 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 // MVC - MODEL VIEW CONTROLLERS
 
@@ -16,6 +18,13 @@ connectDB();
 
 // rest object
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
@@ -50,6 +59,8 @@ app.use("/api/v1/user", require("./routes/userRoutes"));
 app.use("/api/v1/student", require("./routes/studentRoutes"));
 // admin routes
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
+// Define placement routes
+app.use("/api/v1/placements", require("./routes/placementRoutes.js")(io));
 
 //PORT
 const PORT = process.env.PORT || 8080;

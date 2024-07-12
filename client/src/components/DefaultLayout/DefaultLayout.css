@@ -29,7 +29,19 @@
   align-items: center;
   justify-content: space-between;
 }
+.demo-logo-vertical {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  vertical-align: middle;
+}
 
+.demo-logo-vertical img {
+  margin-top: 1rem;
+  height: 3rem;
+  width: 3rem;
+}
 .demo-logo-vertical h1 {
   font-weight: 800 !important;
   font-size: 2rem !important;

@@ -1,14 +1,14 @@
 import { Button, Layout, Menu, theme } from "antd";
 import { useState } from "react";
-import { FaUsersGear } from "react-icons/fa6";
+import { FaUserGraduate } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
+import { RiShieldUserFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Title from "../Title/Title";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import "./DefaultLayout.css";
-import { FaUsers } from "react-icons/fa";
 
 const { Header, Sider, Content } = Layout;
 
@@ -35,7 +35,11 @@ const DefaultLayout = ({ children }) => {
         style={{ overflow: "visible" }}
       >
         <div className="demo-logo-vertical">
-          <h1>PP</h1>
+          {/* <h1>PP</h1> */}
+          <img
+            src="https://vjit.ac.in/wp-content/uploads/2023/05/favicon.png"
+            alt="vjit logo"
+          />
         </div>
         <Menu
           theme="dark"
@@ -50,13 +54,13 @@ const DefaultLayout = ({ children }) => {
             <>
               <Menu.Item
                 key="/admin/manage-admins"
-                icon={<FaUsersGear size={"1.5rem"} color="#ccc" />}
+                icon={<RiShieldUserFill size={"1.5rem"} color="#ccc" />}
               >
                 <Link to="/admin/manage-admins">Admins</Link>
               </Menu.Item>
               <Menu.Item
                 key="/admin/manage-students"
-                icon={<FaUsers size={"1.5rem"} color="#ccc" />}
+                icon={<FaUserGraduate size={"1.3rem"} color="#ccc" />}
               >
                 <Link to="/admin/manage-students">Students</Link>
               </Menu.Item>
