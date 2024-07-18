@@ -14,6 +14,7 @@ import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
 import Placement from "./pages/ADMIN/Placement/Placement.jsx";
 import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
 import Notification from "./components/Notification/Notification.jsx";
+import AdminDashboard from "./pages/ADMIN/AdminDashboard/AdminDashboard.jsx";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
@@ -123,6 +124,16 @@ function Main() {
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
                 <Placement />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/admin/admin-dashboard"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <AdminDashboard />
               </Suspense>
             </ProtectedRoutes>
           }
