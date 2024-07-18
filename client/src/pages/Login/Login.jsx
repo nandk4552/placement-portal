@@ -12,28 +12,31 @@ const { Content } = Layout;
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isStudentLogin, setIsStudentLogin] = useState(true); // State to toggle between student and admin login
+  const [isStudentLogin, setIsStudentLogin] = useState(true);
 
   const handleSubmit = async (values) => {
-    console.log("submit");
     try {
       dispatch({
         type: "rootReducer/showLoading",
       });
       const url = isStudentLogin
         ? `${import.meta.env.VITE_SERVER}/api/v1/auth/student/login`
-        : `${import.meta.env.VITE_SERVER}/api/v1/auth/admin/login`; // Change URL based on login type
+        : `${import.meta.env.VITE_SERVER}/api/v1/auth/admin/login`;
       const { data } = await axios.post(url, values);
-      console.log(data);
       message.success(data?.message);
       dispatch({
         type: "rootReducer/hideLoading",
       });
-      localStorage.setItem(
-        "auth",
-        JSON.stringify(isStudentLogin ? data?.user : data?.admin)
-      );
+      // Store user data in localStorage
+      localStorage.setItem("auth", JSON.stringify(data?.user || data?.admin));
       localStorage.setItem("token", data?.token);
+
+      // Dispatch action to set user in Redux state
+      dispatch({
+        type: "rootReducer/setUser",
+        payload: data?.user || data?.admin,
+      });
+
       if (isStudentLogin) {
         return navigate("/");
       } else {

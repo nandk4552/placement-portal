@@ -13,6 +13,7 @@
   "author": "NAND KISHORE, VIJAYANAND",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "concurrently": "^8.2.2",

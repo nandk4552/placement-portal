@@ -61,11 +61,24 @@ app.use("/api/v1/student", require("./routes/studentRoutes"));
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
 // Define placement routes
 app.use("/api/v1/placements", require("./routes/placementRoutes.js")(io));
+// Define application for placements routes
+app.use(
+  "/api/v1/application",
+  require("./routes/placementApplicationRoutes.js")
+);
+
+// Socket.io connection
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
 
 //PORT
 const PORT = process.env.PORT || 8080;
 
-//listen
-app.listen(PORT, () => {
+// listen
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`.white.bgMagenta);
 });

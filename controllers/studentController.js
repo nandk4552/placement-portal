@@ -119,7 +119,7 @@ const updateOnlyStudentDetails = async (req, res) => {
     }
 
     // Validate that userId is a valid ObjectId
-    if (!mongoose .Types.ObjectId.isValid(userId)) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).send({
         success: false,
         message: "Invalid user ID",
@@ -169,7 +169,27 @@ const updateOnlyStudentDetails = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
+// Get a single student by rollno
+const getStudentByRollNo = async (req, res) => {
+  try {
+    const rollno = req.params.rollno;
+    if (!rollno) {
+      return res.status(404).send({
+        success: false,
+        message: "Roll number is required",
+      });
+    }
+    const student = await studentModel.findOne({ rollNumber: rollno });
+    if (!student) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Student not found" });
+    }
+    res.status(200).send({ success: true, student });
+  } catch (error) {
+    res.status(500).send({ success: false, error: error.message });
+  }
+};
 module.exports = {
   createStudent,
   getAllStudents,
@@ -178,4 +198,5 @@ module.exports = {
   deleteStudent,
   getLoggedStudent,
   updateOnlyStudentDetails,
+  getStudentByRollNo,
 };

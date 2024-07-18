@@ -1,0 +1,29 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #282c34;
+  color: white;
+}
+
+.notifications {
+  position: relative;
+  cursor: pointer;
+}
+
+.notifications ul {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background-color: white;
+  color: black;
+  list-style-type: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.notifications:hover ul {
+  display: block;
+}

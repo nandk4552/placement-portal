@@ -134,7 +134,12 @@ const UserAvatar = () => {
         placement="bottomRight"
         arrow={{ pointAtCenter: true }}
       >
-        <div onClick={(e) => e.preventDefault()}>
+        <div
+          onClick={(e) => e.preventDefault()}
+          style={{
+            marginLeft: "1rem",
+          }}
+        >
           <Avatar
             className="user-avatar"
             style={{

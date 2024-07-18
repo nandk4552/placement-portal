@@ -8,6 +8,7 @@ const {
   deleteStudent,
   getLoggedStudent,
   updateOnlyStudentDetails,
+  getStudentByRollNo,
 } = require("../controllers/studentController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
@@ -36,6 +37,13 @@ router.put("/update/:id", authMiddleware, adminMiddleware, updateStudent);
 //* DELETE student placement data by student _id field || GET || api/v1/student/get-all
 router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteStudent);
 
+//* get student placement data by rollno field || GET || api/v1/student/get-by-student-data/:rollno
+router.get(
+  "/get-by-student-data/:rollno",
+  authMiddleware,
+  studentMiddleware,
+  getStudentByRollNo
+);
 //* get student logged in placement data || GET || api/v1/student/get
 router.get("/get", authMiddleware, studentMiddleware, getLoggedStudent);
 

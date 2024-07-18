@@ -1,14 +1,27 @@
-import { Button, Layout, Menu, theme } from "antd";
-import { useState } from "react";
-import { FaUserGraduate } from "react-icons/fa";
+import { BellOutlined } from "@ant-design/icons";
+import {
+  notification as antNotification,
+  Badge,
+  Button,
+  Layout,
+  List,
+  Menu,
+  Popover,
+  theme,
+} from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { FaTable, FaUserGraduate } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
 import { RiShieldUserFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 import Title from "../Title/Title";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import "./DefaultLayout.css";
+const socket = io("http://localhost:8080"); // Ensure the URL matches your server address
 
 const { Header, Sider, Content } = Layout;
 
@@ -16,12 +29,45 @@ const DefaultLayout = ({ children }) => {
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.rootReducer);
   const [collapsed, setCollapsed] = useState(true);
+  const [placements, setPlacements] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    fetchPlacements();
+    socket.on("new-placement", (placement) => {
+      setNotifications((prev) => [...prev, placement]);
+      antNotification.info({
+        message: "New Placement Drive",
+        description: `${placement.title} on ${new Date(
+          placement.date
+        ).toDateString()}`,
+      });
+    });
+
+    return () => {
+      socket.off("new-placement");
+    };
+  }, []);
+
+  const fetchPlacements = async () => {
+    const res = await axios.get("http://localhost:8080/api/v1/placements");
+    setPlacements(res.data);
+  };
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   // Fetch usertype from local storage
   const auth = localStorage.getItem("auth");
   const userType = auth ? JSON.parse(auth).usertype : null;
+
+  const [visible, setVisible] = useState(false);
+
+  // Toggle popover visibility
+  const handleVisibleChange = (visible) => {
+    setVisible(visible);
+  };
+
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
       {/* {loading && <Spinner />} */}
@@ -47,9 +93,17 @@ const DefaultLayout = ({ children }) => {
           defaultSelectedKeys={window.location.pathname}
         >
           {userType === "student" ? (
-            <Menu.Item key="/" icon={<IoHome size={"1.5rem"} color="#ccc" />}>
-              <Link to="/">Home</Link>
-            </Menu.Item>
+            <>
+              <Menu.Item key="/" icon={<IoHome size={"1.5rem"} color="#ccc" />}>
+                <Link to="/">Home</Link>
+              </Menu.Item>
+              <Menu.Item
+                key="/student/placements"
+                icon={<FaTable size={"1.5rem"} color="#ccc" />}
+              >
+                <Link to="/student/placements">Placements</Link>
+              </Menu.Item>
+            </>
           ) : (
             <>
               <Menu.Item
@@ -63,6 +117,12 @@ const DefaultLayout = ({ children }) => {
                 icon={<FaUserGraduate size={"1.3rem"} color="#ccc" />}
               >
                 <Link to="/admin/manage-students">Students</Link>
+              </Menu.Item>
+              <Menu.Item
+                key="/admin/manage-placements"
+                icon={<FaTable size={"1.3rem"} color="#ccc" />}
+              >
+                <Link to="/admin/manage-placements">Placements</Link>
               </Menu.Item>
             </>
           )}
@@ -92,7 +152,40 @@ const DefaultLayout = ({ children }) => {
               }}
             />
           </div>
-          <div className="me-3">
+          <div
+            className="me-3"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: "1rem",
+            }}
+          >
+            <Popover
+              content={
+                <List
+                  size="small"
+                  dataSource={notifications}
+                  renderItem={(notification, index) => (
+                    <List.Item key={index}>
+                      {notification.title} -{" "}
+                      {new Date(notification.date).toDateString()}
+                    </List.Item>
+                  )}
+                />
+              }
+              title="Notifications"
+              trigger="click"
+              open={visible}
+              onOpenChange={handleVisibleChange}
+              style={{
+                marginRight: "2rem",
+              }}
+            >
+              <Badge count={notifications.length}>
+                <Button shape="circle" icon={<BellOutlined />} />
+              </Badge>
+            </Popover>
             <UserAvatar />
           </div>
         </Header>

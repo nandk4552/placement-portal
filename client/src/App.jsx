@@ -11,6 +11,9 @@ import { hideLoading, showLoading } from "./redux/rootReducer";
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
+import Placement from "./pages/ADMIN/Placement/Placement.jsx";
+import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
+import Notification from "./components/Notification/Notification.jsx";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
@@ -69,6 +72,22 @@ function Main() {
           }
         />
         <Route
+          path="/notification"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Notification />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/student/placements"
+          element={
+            <Suspense fallback={<Loader />}>
+              <PlacementList />
+            </Suspense>
+          }
+        />
+        <Route
           path="/admin"
           element={
             <ProtectedRoutes>
@@ -94,6 +113,16 @@ function Main() {
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
                 <ManagegStudents />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/admin/manage-placements"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <Placement />
               </Suspense>
             </ProtectedRoutes>
           }
