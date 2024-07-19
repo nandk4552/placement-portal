@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const { Title } = Typography;
@@ -108,6 +108,16 @@ const Login = () => {
           >
             <Input.Password placeholder="Password" className="login-input" />
           </Form.Item>
+          <div className="form-footer">
+            <div className="links-container">
+              <p>
+                Don't have an account?{" "}
+                <Link to="/register" className="link">
+                  Register Here!
+                </Link>
+              </p>
+            </div>
+          </div>
           <Form.Item>
             <Button type="primary" htmlType="submit" className="login-button">
               Login

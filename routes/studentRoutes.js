@@ -9,6 +9,7 @@ const {
   getLoggedStudent,
   updateOnlyStudentDetails,
   getStudentByRollNo,
+  getStudentCount,
 } = require("../controllers/studentController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
@@ -46,6 +47,9 @@ router.get(
 );
 //* get student logged in placement data || GET || api/v1/student/get
 router.get("/get", authMiddleware, studentMiddleware, getLoggedStudent);
+
+// Route to get the total student count
+router.get("/count", getStudentCount);
 
 //* update student's email, alternative email and password || PUT || api/v1/student/update/details
 router.put(

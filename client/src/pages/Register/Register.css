@@ -1,52 +1,8 @@
-/* .register {
+.register-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  height: 100vh;
 }
-
-.register input {
-  width: 400px !important;
-}
-
-.register h1 {
-  text-align: center;
-  font-weight: bolder;
-  font-size: 2rem;
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-}
-.register h3 {
-  text-align: center;
-  font-weight: bolder;
-  font-size: 2rem;
-}
-
-.register-form {
-  background-color: #001529;
-  color: #fff;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: rgba(0, 21, 41, 0.3) 1.95px 1.95px 2.6px;
-}
-
-.register-form label,
-.register-form p {
-  color: #fff !important;
-}
-.register-form:hover {
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
-.register .register-form a {
-  font-weight: bolder;
-}
-.register .register-form a:hover {
-  text-decoration: underline;
-} */
-/* General styles */
-
 .register {
   display: flex;
   justify-content: center;

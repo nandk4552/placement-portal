@@ -7,14 +7,13 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { hideLoading, showLoading } from "./redux/rootReducer";
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
+import Notification from "./components/Notification/Notification.jsx";
+import AdminDashboard from "./pages/ADMIN/AdminDashboard/AdminDashboard.jsx";
 import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
 import Placement from "./pages/ADMIN/Placement/Placement.jsx";
 import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
-import Notification from "./components/Notification/Notification.jsx";
-import AdminDashboard from "./pages/ADMIN/AdminDashboard/AdminDashboard.jsx";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
