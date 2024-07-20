@@ -362,6 +362,71 @@ const userPhotoController = async (req, res) => {
     });
   }
 };
+
+// for user notifications
+// Get the top 5 latest notifications for the authenticated user
+const getNotificationsController = async (req, res) => {
+  try {
+    // Fetch user by ID from request body
+    const user = await userModel.findById(req.body.id); // Ensure you're using req.body.id here
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Sort notifications by date in descending order and get the top 5
+    const latestNotifications = user.notifications
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 5);
+
+    res.status(200).json(latestNotifications);
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    res.status(500).json({ message: "Error fetching notifications", error });
+  }
+};
+
+// Mark a specific notification as read
+const markNotificationAsReadController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await userModel.findById(req.body.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const notification = user.notifications.id(id);
+    if (!notification) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+    notification.read = true;
+    await user.save();
+    res.status(200).json({ message: "Notification marked as read" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error marking notification as read", error });
+  }
+};
+
+// Delete a specific notification
+const deleteNotificationController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await userModel.findById(req.body.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const notification = user.notifications.id(id);
+    if (!notification) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+    notification.remove();
+    await user.save();
+    res.status(200).json({ message: "Notification deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting notification", error });
+  }
+};
+
 module.exports = {
   getUserController,
   updateUserController,
@@ -371,4 +436,7 @@ module.exports = {
   resetPasswordByOTPController,
   initiatePasswordResetController,
   userPhotoController,
+  getNotificationsController,
+  markNotificationAsReadController,
+  deleteNotificationController,
 };

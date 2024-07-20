@@ -10,6 +10,7 @@ const {
   updateOnlyStudentDetails,
   getStudentByRollNo,
   getStudentCount,
+  updateStudentDetails,
 } = require("../controllers/studentController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
@@ -58,4 +59,6 @@ router.put(
   studentMiddleware,
   updateOnlyStudentDetails
 );
+//* update student details || PUT || api/v1/student/update
+router.put("/update", authMiddleware, studentMiddleware, updateStudentDetails);
 module.exports = router;

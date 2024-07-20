@@ -108,16 +108,18 @@ const Login = () => {
           >
             <Input.Password placeholder="Password" className="login-input" />
           </Form.Item>
-          <div className="form-footer">
-            <div className="links-container">
-              <p>
-                Don't have an account?{" "}
-                <Link to="/register" className="link">
-                  Register Here!
-                </Link>
-              </p>
+          {isStudentLogin && (
+            <div className="form-footer">
+              <div className="links-container">
+                <p>
+                  Don't have an account?{" "}
+                  <Link to="/register" className="link">
+                    Register Here!
+                  </Link>
+                </p>
+              </div>
             </div>
-          </div>
+          )}
           <Form.Item>
             <Button type="primary" htmlType="submit" className="login-button">
               Login

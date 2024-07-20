@@ -169,6 +169,143 @@ const updateOnlyStudentDetails = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Update student master data
+const updateStudentDetails = async (req, res) => {
+  try {
+    const userId = req.body.id;
+    if (!userId) {
+      return res.status(401).send({
+        success: false,
+        message: "Unauthorized User",
+      });
+    }
+
+    // Validate that userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Retrieve all student details from request body
+    const {
+      rollNumber,
+      name,
+      branch,
+      email,
+      alternateEmail,
+      mobileNumber,
+      dateOfBirth,
+      gender,
+      firstName,
+      middleName,
+      lastName,
+      sscCgpa,
+      sscBoard,
+      tenthYearOfPass,
+      intermediatePercentage,
+      intermediate,
+      intermediatePassOutYear,
+      btechCourseJoinedThrough,
+      emcatEcetRank,
+      btechPercentage,
+      btechCgpa,
+      currentBacklogs,
+      caste,
+      aadharCardNumber,
+      careerGoal,
+      passportPhoto,
+      interestedIn,
+      fatherName,
+      motherName,
+      parentContactNo,
+      parentProfession,
+      permanentAddress,
+    } = req.body;
+
+    // Validate required fields
+    if (!email || !alternateEmail || !mobileNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, alternate email, and mobile number are required",
+      });
+    }
+
+    // Update all student fields
+    const updatedFields = {
+      rollNumber,
+      name,
+      branch,
+      email,
+      alternateEmail,
+      mobileNumber,
+      dateOfBirth,
+      gender,
+      firstName,
+      middleName,
+      lastName,
+      sscCgpa,
+      sscBoard,
+      tenthYearOfPass,
+      intermediatePercentage,
+      intermediate,
+      intermediatePassOutYear,
+      btechCourseJoinedThrough,
+      emcatEcetRank,
+      btechPercentage,
+      btechCgpa,
+      currentBacklogs,
+      caste,
+      aadharCardNumber,
+      careerGoal,
+      passportPhoto,
+      interestedIn,
+      fatherName,
+      motherName,
+      parentContactNo,
+      parentProfession,
+      permanentAddress,
+    };
+
+    // Find the student associated with the user and update
+    const student = await studentModel.findOneAndUpdate(
+      { user: userId },
+      updatedFields,
+      { new: true }
+    );
+
+    // Check if student exists
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found for the user",
+      });
+    }
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      message: "Student details updated successfully",
+      student,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // Get a single student by rollno
 const getStudentByRollNo = async (req, res) => {
   try {
@@ -211,4 +348,5 @@ module.exports = {
   getLoggedStudent,
   updateOnlyStudentDetails,
   getStudentByRollNo,
+  updateStudentDetails,
 };

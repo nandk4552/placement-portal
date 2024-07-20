@@ -3,11 +3,11 @@ import axios from "axios";
 import io from "socket.io-client";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import { useSelector } from "react-redux";
-
 import {
   Card,
   Button,
-  List,
+  Row,
+  Col,
   Typography,
   notification as antNotification,
   Spin,
@@ -62,9 +62,7 @@ function StudentDashboard() {
         "Failed to submit your application. Please try again later.";
 
       // Check if the error message is "Application already exists"
-      if (
-        error.response?.status === 409
-      ) {
+      if (error.response?.status === 409) {
         errorMessage = error.response?.data?.message;
       }
 
@@ -74,24 +72,33 @@ function StudentDashboard() {
       });
     }
   };
+
+  // Filter active placements
+  const activePlacements = placements.filter(
+    (placement) => placement.status === "active"
+  );
+
   return (
     <DefaultLayout>
       <Title level={2} style={{ textAlign: "center", marginBottom: "20px" }}>
         Available Placements
       </Title>
       <Spin spinning={loading}>
-        <List
-          grid={{ gutter: 16, column: 1 }}
-          dataSource={placements}
-          renderItem={(placement) => (
-            <List.Item>
+        <Row gutter={[16, 16]}>
+          {activePlacements.map((placement) => (
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              xl={6}
+              xxl={4}
+              key={placement._id}
+            >
               <Card
-                size="small" // Set card size to small
-                title={placement.title}
-                style={{
-                  borderRadius: "10px",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                }}
+                hoverable
+                size="small"
+                title={placement.title.toUpperCase()}
                 actions={[
                   <Button
                     type="primary"
@@ -102,18 +109,36 @@ function StudentDashboard() {
                   </Button>,
                 ]}
               >
-                <Text>{placement.description}</Text>
-                <br />
-                <Text type="secondary">
-                  Date: {new Date(placement.date).toLocaleDateString()}
+                Description:{" "}
+                <Text
+                  style={{
+                    marginBottom: "10px",
+                    lineHeight: "1.5",
+                    fontWeight: "bold",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {placement.description}
                 </Text>
-                <div style={{ marginTop: "10px", textAlign: "right" }}>
+                <br />  
+                Date:{" "}
+                <Text
+                  style={{
+                    marginBottom: "10px",
+                    lineHeight: "1.5",
+                    fontWeight: "bold",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {new Date(placement.date).toLocaleDateString()}
+                </Text>
+                {/* <div style={{ marginTop: "10px", textAlign: "right" }}>
                   <Button type="link">Details</Button>
-                </div>
+                </div> */}
               </Card>
-            </List.Item>
-          )}
-        />
+            </Col>
+          ))}
+        </Row>
       </Spin>
     </DefaultLayout>
   );

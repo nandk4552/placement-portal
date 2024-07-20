@@ -45,6 +45,14 @@ const userSchema = new mongoose.Schema(
       default:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGTMiqYNrUAciUJyeOwbTgWIqFAqiCV9pfrAUDDGvaCMO65r2pzECyfCbTbWlQBG90cZI&usqp=CAU",
     },
+    notifications: [
+      {
+        title: { type: String, required: true },
+        message: { type: String, required: true },
+        date: { type: Date, default: Date.now },
+        read: { type: Boolean, default: false },
+      },
+    ],
   },
   { timestamps: true }
 );

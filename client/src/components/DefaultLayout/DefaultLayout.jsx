@@ -1,14 +1,5 @@
 import { BellOutlined } from "@ant-design/icons";
-import {
-  notification as antNotification,
-  Badge,
-  Button,
-  Layout,
-  List,
-  Menu,
-  Popover,
-  theme,
-} from "antd";
+import { Badge, Button, Layout, List, Menu, Popover, theme } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaTable, FaUserGraduate } from "react-icons/fa";
@@ -16,57 +7,110 @@ import { IoHome } from "react-icons/io5";
 import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
 import { RiShieldUserFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
+import { Link } from "react-router-dom";
 import Title from "../Title/Title";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import "./DefaultLayout.css";
-const socket = io("http://localhost:8080"); // Ensure the URL matches your server address
 
 const { Header, Sider, Content } = Layout;
 
 const DefaultLayout = ({ children }) => {
-  const navigate = useNavigate();
   const { loading } = useSelector((state) => state.rootReducer);
   const [collapsed, setCollapsed] = useState(true);
   const [placements, setPlacements] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [error, setError] = useState(null);
+  const [loadingNotifications, setLoadingNotifications] = useState(true);
 
   useEffect(() => {
-    fetchPlacements();
-    socket.on("new-placement", (placement) => {
-      setNotifications((prev) => [...prev, placement]);
-      antNotification.info({
-        message: "New Placement Drive",
-        description: `${placement.title} on ${new Date(
-          placement.date
-        ).toDateString()}`,
-      });
-    });
-
-    return () => {
-      socket.off("new-placement");
+    // Fetch placements data
+    const fetchPlacements = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/v1/placements");
+        setPlacements(res.data);
+      } catch (error) {
+        console.error("Error fetching placements:", error);
+      }
     };
+
+    fetchPlacements();
+
+    // Fetch notifications data
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/user/notifications",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const fetchedNotifications = response.data;
+        setNotifications(fetchedNotifications);
+        console.log(fetchedNotifications);
+        // Calculate unread notifications count
+        const countUnread = fetchedNotifications.filter(
+          (notification) => !notification.read
+        ).length;
+        setUnreadCount(countUnread);
+      } catch (error) {
+        setError("Error fetching notifications.");
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setLoadingNotifications(false);
+      }
+    };
+
+    fetchNotifications();
   }, []);
 
-  const fetchPlacements = async () => {
-    const res = await axios.get("http://localhost:8080/api/v1/placements");
-    setPlacements(res.data);
+  const handleVisibleChange = (visible) => {
+    setVisible(visible);
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        `http://localhost:8080/api/v1/user/notifications/${notificationId}/read`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update local notifications state
+      const updatedNotifications = notifications.map((notification) =>
+        notification._id === notificationId
+          ? { ...notification, read: true }
+          : notification
+      );
+      setNotifications(updatedNotifications);
+
+      // Update unread notifications count
+      const countUnread = updatedNotifications.filter(
+        (notification) => !notification.read
+      ).length;
+      setUnreadCount(countUnread);
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      setError("Error marking notification as read.");
+    }
   };
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
   // Fetch usertype from local storage
   const auth = localStorage.getItem("auth");
   const userType = auth ? JSON.parse(auth).usertype : null;
-
-  const [visible, setVisible] = useState(false);
-
-  // Toggle popover visibility
-  const handleVisibleChange = (visible) => {
-    setVisible(visible);
-  };
 
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
@@ -81,7 +125,6 @@ const DefaultLayout = ({ children }) => {
         style={{ overflow: "visible" }}
       >
         <div className="demo-logo-vertical">
-          {/* <h1>PP</h1> */}
           <img
             src="https://vjit.ac.in/wp-content/uploads/2023/05/favicon.png"
             alt="vjit logo"
@@ -131,7 +174,7 @@ const DefaultLayout = ({ children }) => {
       <Layout>
         <Header
           style={{ background: colorBgContainer, padding: 0 }}
-          className="d-flex  align-items-center justify-content-between"
+          className="d-flex align-items-center justify-content-between"
         >
           <div>
             <Button
@@ -166,10 +209,18 @@ const DefaultLayout = ({ children }) => {
                 <List
                   size="small"
                   dataSource={notifications}
-                  renderItem={(notification, index) => (
-                    <List.Item key={index}>
+                  renderItem={(notification) => (
+                    <List.Item key={notification._id}>
                       {notification.title} -{" "}
                       {new Date(notification.date).toDateString()}
+                      {!notification.read && (
+                        <Button
+                          type="link"
+                          onClick={() => markAsRead(notification._id)}
+                        >
+                          Mark as Read
+                        </Button>
+                      )}
                     </List.Item>
                   )}
                 />
@@ -182,7 +233,7 @@ const DefaultLayout = ({ children }) => {
                 marginRight: "2rem",
               }}
             >
-              <Badge count={notifications.length}>
+              <Badge count={unreadCount}>
                 <Button shape="circle" icon={<BellOutlined />} />
               </Badge>
             </Popover>

@@ -8,6 +8,9 @@ const {
   deleteUserController,
   resetPasswordByOTPController,
   initiatePasswordResetController,
+  getNotificationsController,
+  markNotificationAsReadController,
+  deleteNotificationController,
 } = require("../controllers/userController.js");
 const authMiddleware = require("../middlewares/authMiddleware.js");
 
@@ -41,5 +44,18 @@ router.delete("/delete-user/:id", authMiddleware, deleteUserController);
 //   formidable(),
 //   userPhotoController
 // );
+
+// New routes for notifications
+router.get("/notifications", authMiddleware, getNotificationsController);
+router.post(
+  "/notifications/:id/read",
+  authMiddleware,
+  markNotificationAsReadController
+);
+router.delete(
+  "/notifications/:id",
+  authMiddleware,
+  deleteNotificationController
+);
 
 module.exports = router;

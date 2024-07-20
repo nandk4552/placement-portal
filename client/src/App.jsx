@@ -12,7 +12,7 @@ import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 import Notification from "./components/Notification/Notification.jsx";
 import AdminDashboard from "./pages/ADMIN/AdminDashboard/AdminDashboard.jsx";
 import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
-import Placement from "./pages/ADMIN/Placement/Placement.jsx";
+import Placement from "./pages/ADMIN/PlacementPage/PlacementPage.jsx";
 import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
