@@ -11,17 +11,20 @@ import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
 import PlacementForm from "../../../components/PlacementForm/PlacementForm";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const { Column } = Table;
 
-const PlacementPage = () => {
+const ManagePlacement = () => {
   const [placements, setPlacements] = useState([]);
+  const [applicationCounts, setApplicationCounts] = useState({});
   const [loading, setLoading] = useState(false);
   const [popupModal, setPopupModal] = useState(false);
   const [editPlacement, setEditPlacement] = useState(null);
 
   useEffect(() => {
     fetchPlacements();
+    fetchApplicationCounts();
   }, []);
 
   const fetchPlacements = async () => {
@@ -36,6 +39,19 @@ const PlacementPage = () => {
       });
     }
     setLoading(false);
+  };
+
+  const fetchApplicationCounts = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:8080/api/v1/placements/applications-count"
+      );
+      const counts = res.data.reduce((acc, item) => {
+        acc[item._id] = item.count;
+        return acc;
+      }, {});
+      setApplicationCounts(counts);
+    } catch (error) {}
   };
 
   const handleSubmit = async (values) => {
@@ -59,6 +75,7 @@ const PlacementPage = () => {
       setPopupModal(false);
       setEditPlacement(null);
       fetchPlacements();
+      fetchApplicationCounts(); // Refresh the counts
     } catch (error) {
       antNotification.error({
         message: "Error",
@@ -77,6 +94,7 @@ const PlacementPage = () => {
         description: "Placement deleted successfully",
       });
       fetchPlacements();
+      fetchApplicationCounts(); // Refresh the counts
     } catch (error) {
       antNotification.error({
         message: "Error",
@@ -92,7 +110,7 @@ const PlacementPage = () => {
       render: (text, record, index) => index + 1,
     },
     {
-      title: "Title",
+      title: "Company",
       dataIndex: "title",
       key: "title",
     },
@@ -112,6 +130,15 @@ const PlacementPage = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (status === "active" ? "Active" : "Inactive"),
+    },
+    {
+      title: "Applications",
+      key: "applications",
+      render: (text, record) => (
+        <Link to={`/admin/placements/${record._id}/applicants`}>
+          {applicationCounts[record._id] || 0} applicants
+        </Link>
+      ),
     },
     {
       title: "Actions",
@@ -189,4 +216,4 @@ const PlacementPage = () => {
   );
 };
 
-export default PlacementPage;
+export default ManagePlacement;

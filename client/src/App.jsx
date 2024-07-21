@@ -10,9 +10,16 @@ import {
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 import Notification from "./components/Notification/Notification.jsx";
-import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
-import Placement from "./pages/ADMIN/PlacementPage/PlacementPage.jsx";
-import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
+import ApplicantDetails from "./pages/ADMIN/ApplicantDetails/ApplicantDetails.jsx";
+const ManagegStudents = lazy(() =>
+  import("./pages/ADMIN/ManagegStudents/ManagegStudents.jsx")
+);
+const ManagePlacement = lazy(() =>
+  import("./pages/ADMIN/ManagePlacement/ManagePlacement.jsx")
+);
+const PlacementList = lazy(() =>
+  import("./pages/StudentDashboard/StudentDashboard.jsx")
+);
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
@@ -121,7 +128,17 @@ function Main() {
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
-                <Placement />
+                <ManagePlacement />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/admin/placements/:placementId/applicants"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <ApplicantDetails />
               </Suspense>
             </ProtectedRoutes>
           }

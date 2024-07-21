@@ -1,6 +1,7 @@
 const express = require("express");
 const Placement = require("../models/placementModel"); // Ensure you have a Placement model defined
 const userModel = require("../models/userModel");
+const PlacementApplicationModel = require("../models/placementApplicationModel");
 
 const router = express.Router();
 
@@ -85,6 +86,44 @@ module.exports = (io) => {
     res
       .status(200)
       .json({ success: true, message: "Applied successfully", placementId });
+  });
+
+  // Endpoint to get the count of applied users for each placement
+  router.get("/applications-count", async (req, res) => {
+    try {
+      const counts = await PlacementApplicationModel.aggregate([
+        {
+          $group: {
+            _id: "$placementId",
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $lookup: {
+            from: "placements",
+            localField: "_id",
+            foreignField: "_id",
+            as: "placement",
+          },
+        },
+        {
+          $unwind: "$placement",
+        },
+        {
+          $project: {
+            _id: 1,
+            count: 1,
+            "placement.title": 1,
+          },
+        },
+      ]);
+
+      res.json(counts);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Error fetching application counts", error });
+    }
   });
 
   return router;

@@ -4,8 +4,9 @@ import io from "socket.io-client";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import { useSelector } from "react-redux";
 import {
-  Card,
+  Badge,
   Button,
+  Card,
   Row,
   Col,
   Typography,
@@ -95,47 +96,46 @@ function StudentDashboard() {
               xxl={4}
               key={placement._id}
             >
-              <Card
-                hoverable
-                size="small"
-                title={placement.title.toUpperCase()}
-                actions={[
-                  <Button
-                    type="primary"
-                    size="small" // Set button size to small
-                    onClick={() => applyForPlacement(placement._id)}
+              <Badge.Ribbon text={placement.title.toUpperCase()} color="blue">
+                <Card
+                  hoverable
+                  size="small"
+                  title={placement.title.toUpperCase()}
+                  actions={[
+                    <Button
+                      type="primary"
+                      size="small" // Set button size to small
+                      onClick={() => applyForPlacement(placement._id)}
+                    >
+                      Apply
+                    </Button>,
+                  ]}
+                >
+                  Description:{" "}
+                  <Text
+                    style={{
+                      marginBottom: "10px",
+                      lineHeight: "1.5",
+                      fontWeight: "bold",
+                      textTransform: "capitalize",
+                    }}
                   >
-                    Apply
-                  </Button>,
-                ]}
-              >
-                Description:{" "}
-                <Text
-                  style={{
-                    marginBottom: "10px",
-                    lineHeight: "1.5",
-                    fontWeight: "bold",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {placement.description}
-                </Text>
-                <br />  
-                Date:{" "}
-                <Text
-                  style={{
-                    marginBottom: "10px",
-                    lineHeight: "1.5",
-                    fontWeight: "bold",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  {new Date(placement.date).toLocaleDateString()}
-                </Text>
-                {/* <div style={{ marginTop: "10px", textAlign: "right" }}>
-                  <Button type="link">Details</Button>
-                </div> */}
-              </Card>
+                    {placement.description}
+                  </Text>
+                  <br />
+                  Date:{" "}
+                  <Text
+                    style={{
+                      marginBottom: "10px",
+                      lineHeight: "1.5",
+                      fontWeight: "bold",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {new Date(placement.date).toLocaleDateString()}
+                  </Text>
+                </Card>
+              </Badge.Ribbon>
             </Col>
           ))}
         </Row>
