@@ -10,7 +10,6 @@ import {
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 import Notification from "./components/Notification/Notification.jsx";
-import AdminDashboard from "./pages/ADMIN/AdminDashboard/AdminDashboard.jsx";
 import ManagegStudents from "./pages/ADMIN/ManagegStudents/ManagegStudents.jsx";
 import Placement from "./pages/ADMIN/PlacementPage/PlacementPage.jsx";
 import PlacementList from "./pages/StudentDashboard/StudentDashboard.jsx";
@@ -21,8 +20,8 @@ const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
 const AdminTable = lazy(() =>
   import("./pages/ADMIN/AdminTable/AdminTable.jsx")
 );
-const AdminHomePage = lazy(() =>
-  import("./pages/ADMIN/AdminHomePage/AdminHomePage.jsx")
+const AdminDashboard = lazy(() =>
+  import("./pages/ADMIN/AdminDashboard/AdminDashboard.jsx")
 );
 
 const Loader = () => <LayoutLoader />;
@@ -92,7 +91,7 @@ function Main() {
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
-                <AdminHomePage />
+                <AdminDashboard />
               </Suspense>
             </ProtectedRoutes>
           }

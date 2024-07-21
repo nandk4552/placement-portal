@@ -1,0 +1,43 @@
+.dashboard-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.card-icon {
+  margin-right: 20px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.card-title {
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: 600;
+  color: white;
+}
+
+.ant-statistic-content-value {
+  font-size: 24px;
+  color: white;
+}

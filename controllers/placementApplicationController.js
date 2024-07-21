@@ -1,3 +1,5 @@
+const PlacementApplicationModel = require("../models/placementApplicationModel");
+
 const placementApplicationApply = async (req, res) => {
   try {
     const { userId, placementId } = req.body;

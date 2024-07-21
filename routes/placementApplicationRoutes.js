@@ -1,6 +1,5 @@
 const express = require("express");
 const axios = require("axios");
-const PlacementApplicationModel = require("../models/placementApplicationModel");
 const {
   placementApplicationApply,
   placementApplicationByUserId,
