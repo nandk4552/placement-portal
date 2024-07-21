@@ -102,7 +102,6 @@ const getLoggedStudent = async (req, res) => {
         message: "student master data not registered",
       });
     }
-    console.log(student);
     res.status(200).send({ success: true, student });
   } catch (error) {
     res.status(500).send({ success: false, error: error.message });
@@ -331,7 +330,6 @@ const getStudentByRollNo = async (req, res) => {
 const getStudentCount = async (req, res) => {
   try {
     const studentCount = await studentModel.countDocuments();
-    console.log(studentCount);
     res.status(200).json({ count: studentCount });
   } catch (error) {
     res.status(500).json({ message: "Error fetching student count", error });

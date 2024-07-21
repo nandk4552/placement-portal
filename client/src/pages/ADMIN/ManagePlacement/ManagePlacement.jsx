@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
+  Badge,
   Button,
   Input,
   Modal,
   Table,
+  Tag,
   notification as antNotification,
 } from "antd";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  DeleteFilled,
+  EditFilled,
+} from "@ant-design/icons";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
 import PlacementForm from "../../../components/PlacementForm/PlacementForm";
 import moment from "moment";
@@ -136,7 +142,22 @@ const ManagePlacement = () => {
       key: "applications",
       render: (text, record) => (
         <Link to={`/admin/placements/${record._id}/applicants`}>
-          {applicationCounts[record._id] || 0} applicants
+          <Tag
+            icon={<CheckCircleOutlined />}
+            color="success"
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "3px 5px",
+              fontSize: "14px",
+              fontWeight: "bold",
+              transition: "all 0.3s ease",
+            }}
+          >
+            {applicationCounts[record._id] || 0} applicants
+          </Tag>
         </Link>
       ),
     },

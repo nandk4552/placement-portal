@@ -128,8 +128,21 @@ const HomePage = () => {
                   <strong>Date of Birth:</strong>{" "}
                   {new Date(student.dateOfBirth).toLocaleDateString()}
                 </p>
+                <p>
+                  <strong>Caste:</strong> {student.caste}
+                </p>
+                <p>
+                  <strong>Current Backlogs:</strong> {student.currentBacklogs}
+                </p>
               </Col>
               <Col xs={24} md={12} lg={8}>
+                <p>
+                  <strong>B.Tech Percentage:</strong> {student.btechPercentage}
+                </p>
+                <p>
+                  <strong>B.Tech CGPA:</strong> {student.btechCgpa}
+                </p>
+
                 <p>
                   <strong>SSC CGPA:</strong> {student.sscCgpa}
                 </p>
@@ -156,18 +169,6 @@ const HomePage = () => {
                 </p>
                 <p>
                   <strong>EMCAT ECET Rank:</strong> {student.emcatEcetRank}
-                </p>
-                <p>
-                  <strong>B.Tech Percentage:</strong> {student.btechPercentage}
-                </p>
-                <p>
-                  <strong>B.Tech CGPA:</strong> {student.btechCgpa}
-                </p>
-                <p>
-                  <strong>Current Backlogs:</strong> {student.currentBacklogs}
-                </p>
-                <p>
-                  <strong>Caste:</strong> {student.caste}
                 </p>
               </Col>
               <Col xs={24} md={12} lg={8}>

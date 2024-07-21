@@ -21,57 +21,58 @@ const AdminDashboard = () => {
   const [placements, setPlacements] = useState([]);
 
   useEffect(() => {
-    const fetchStudentCount = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/student/count",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Fetched student count:", response.data.count);
-        setStudentCount(response.data.count);
+    const timer = setTimeout(() => {
+      const fetchStudentCount = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            "http://localhost:8080/api/v1/student/count",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setStudentCount(response.data.count);
 
-        // Fetch the number of placed students
-        const placedResponse = await axios.get(
-          "http://localhost:8080/api/v1/student/placed-count",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Fetched placed count:", placedResponse.data.count);
-        setPlacedCount(placedResponse.data.count);
-        setNotPlacedCount(response.data.count - placedResponse.data.count);
-      } catch (error) {
-        console.error("Error fetching student count:", error);
-      }
-    };
+          // Uncomment and update as needed
+          // const placedResponse = await axios.get(
+          //   "http://localhost:8080/api/v1/student/placed-count",
+          //   {
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //   }
+          // );
+          // setPlacedCount(placedResponse.data.count);
+          // setNotPlacedCount(response.data.count - placedResponse.data.count);
+        } catch (error) {
+          console.error("Error fetching student count:", error);
+        }
+      };
 
-    const fetchPlacements = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/placements",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Fetched placements:", response.data);
-        setPlacements(response.data);
-      } catch (error) {
-        console.error("Error fetching placements:", error);
-      }
-    };
+      const fetchPlacements = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            "http://localhost:8080/api/v1/placements",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setPlacements(response.data);
+        } catch (error) {
+          console.error("Error fetching placements:", error);
+        }
+      };
 
-    fetchStudentCount();
-    fetchPlacements();
+      fetchStudentCount();
+      fetchPlacements();
+    }, 1000); // 1 second delay
+
+    return () => clearTimeout(timer);
   }, []);
 
   const columnData = [

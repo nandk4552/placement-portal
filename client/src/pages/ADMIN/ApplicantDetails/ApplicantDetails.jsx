@@ -166,6 +166,7 @@ const ApplicantDetails = () => {
         : "",
     render: (text) => text,
   });
+
   const columns = [
     {
       title: "S.No",
@@ -173,6 +174,7 @@ const ApplicantDetails = () => {
       fixed: "left",
       width: 60,
       render: (text, record, index) => index + 1,
+      responsive: ["lg"],
     },
     {
       title: "Roll Number",
@@ -181,6 +183,7 @@ const ApplicantDetails = () => {
       fixed: "left",
       width: 150,
       ...getColumnSearchProps("rollNumber"),
+      responsive: ["md"],
     },
     {
       title: "Name",
@@ -189,6 +192,7 @@ const ApplicantDetails = () => {
       fixed: "left",
       width: 150,
       ...getColumnSearchProps("name"),
+      responsive: ["md"],
     },
     {
       title: "Email",
@@ -197,6 +201,7 @@ const ApplicantDetails = () => {
       fixed: "left",
       width: 200,
       ...getColumnSearchProps("email"),
+      responsive: ["lg"],
     },
     {
       title: "Branch",
@@ -204,6 +209,7 @@ const ApplicantDetails = () => {
       key: "branch",
       width: 150,
       ...getColumnSearchProps("branch"),
+      responsive: ["md"],
     },
     {
       title: "Mobile Number",
@@ -211,6 +217,7 @@ const ApplicantDetails = () => {
       key: "mobileNumber",
       width: 150,
       ...getColumnSearchProps("mobileNumber"),
+      responsive: ["lg"],
     },
     {
       title: "Date of Birth",
@@ -220,6 +227,7 @@ const ApplicantDetails = () => {
       render: (dateOfBirth) =>
         dateOfBirth ? moment(dateOfBirth).format("DD/MM/YYYY") : "",
       ...getColumnSearchProps("dateOfBirth"),
+      responsive: ["lg"],
     },
     {
       title: "Gender",
@@ -227,6 +235,7 @@ const ApplicantDetails = () => {
       key: "gender",
       width: 100,
       ...getColumnSearchProps("gender"),
+      responsive: ["md"],
     },
     {
       title: "First Name",
@@ -234,6 +243,7 @@ const ApplicantDetails = () => {
       key: "firstName",
       width: 150,
       ...getColumnSearchProps("firstName"),
+      responsive: ["lg"],
     },
     {
       title: "Middle Name",
@@ -241,6 +251,7 @@ const ApplicantDetails = () => {
       key: "middleName",
       width: 150,
       ...getColumnSearchProps("middleName"),
+      responsive: ["lg"],
     },
     {
       title: "Last Name",
@@ -248,6 +259,7 @@ const ApplicantDetails = () => {
       key: "lastName",
       width: 150,
       ...getColumnSearchProps("lastName"),
+      responsive: ["lg"],
     },
     {
       title: "SSC CGPA",
@@ -255,6 +267,7 @@ const ApplicantDetails = () => {
       key: "sscCgpa",
       width: 120,
       ...getColumnSearchProps("sscCgpa"),
+      responsive: ["lg"],
     },
     {
       title: "SSC Board",
@@ -262,6 +275,7 @@ const ApplicantDetails = () => {
       key: "sscBoard",
       width: 150,
       ...getColumnSearchProps("sscBoard"),
+      responsive: ["lg"],
     },
     {
       title: "10th Year of Pass",
@@ -269,6 +283,7 @@ const ApplicantDetails = () => {
       key: "tenthYearOfPass",
       width: 150,
       ...getColumnSearchProps("tenthYearOfPass"),
+      responsive: ["lg"],
     },
     {
       title: "Intermediate Percentage",
@@ -276,6 +291,7 @@ const ApplicantDetails = () => {
       key: "intermediatePercentage",
       width: 180,
       ...getColumnSearchProps("intermediatePercentage"),
+      responsive: ["lg"],
     },
     {
       title: "Intermediate",
@@ -283,6 +299,7 @@ const ApplicantDetails = () => {
       key: "intermediate",
       width: 150,
       ...getColumnSearchProps("intermediate"),
+      responsive: ["lg"],
     },
     {
       title: "Intermediate Pass Out Year",
@@ -290,6 +307,7 @@ const ApplicantDetails = () => {
       key: "intermediatePassOutYear",
       width: 200,
       ...getColumnSearchProps("intermediatePassOutYear"),
+      responsive: ["lg"],
     },
     {
       title: "BTech Course Joined Through",
@@ -297,6 +315,7 @@ const ApplicantDetails = () => {
       key: "btechCourseJoinedThrough",
       width: 200,
       ...getColumnSearchProps("btechCourseJoinedThrough"),
+      responsive: ["lg"],
     },
     {
       title: "EMCAT/ECET Rank",
@@ -304,6 +323,7 @@ const ApplicantDetails = () => {
       key: "emcatEcetRank",
       width: 150,
       ...getColumnSearchProps("emcatEcetRank"),
+      responsive: ["lg"],
     },
     {
       title: "BTech Percentage",
@@ -311,6 +331,7 @@ const ApplicantDetails = () => {
       key: "btechPercentage",
       width: 150,
       ...getColumnSearchProps("btechPercentage"),
+      responsive: ["lg"],
     },
     {
       title: "BTech CGPA",
@@ -318,6 +339,7 @@ const ApplicantDetails = () => {
       key: "btechCgpa",
       width: 120,
       ...getColumnSearchProps("btechCgpa"),
+      responsive: ["lg"],
     },
     {
       title: "Current Backlogs",
@@ -325,6 +347,7 @@ const ApplicantDetails = () => {
       key: "currentBacklogs",
       width: 150,
       ...getColumnSearchProps("currentBacklogs"),
+      responsive: ["lg"],
     },
     {
       title: "Caste",
@@ -332,6 +355,7 @@ const ApplicantDetails = () => {
       key: "caste",
       width: 120,
       ...getColumnSearchProps("caste"),
+      responsive: ["lg"],
     },
     {
       title: "Aadhar Card Number",
@@ -339,6 +363,7 @@ const ApplicantDetails = () => {
       key: "aadharCardNumber",
       width: 200,
       ...getColumnSearchProps("aadharCardNumber"),
+      responsive: ["lg"],
     },
     {
       title: "Career Goal",
@@ -346,6 +371,7 @@ const ApplicantDetails = () => {
       key: "careerGoal",
       width: 200,
       ...getColumnSearchProps("careerGoal"),
+      responsive: ["lg"],
     },
     {
       title: "Passport Photo",
@@ -358,6 +384,7 @@ const ApplicantDetails = () => {
         </a>
       ),
       ...getColumnSearchProps("passportPhoto"),
+      responsive: ["lg"],
     },
     {
       title: "Interested In",
@@ -365,6 +392,7 @@ const ApplicantDetails = () => {
       key: "interestedIn",
       width: 200,
       ...getColumnSearchProps("interestedIn"),
+      responsive: ["lg"],
     },
     {
       title: "Father Name",
@@ -372,6 +400,7 @@ const ApplicantDetails = () => {
       key: "fatherName",
       width: 150,
       ...getColumnSearchProps("fatherName"),
+      responsive: ["lg"],
     },
     {
       title: "Mother Name",
@@ -379,6 +408,7 @@ const ApplicantDetails = () => {
       key: "motherName",
       width: 150,
       ...getColumnSearchProps("motherName"),
+      responsive: ["lg"],
     },
     {
       title: "Parent Contact No",
@@ -386,6 +416,7 @@ const ApplicantDetails = () => {
       key: "parentContactNo",
       width: 150,
       ...getColumnSearchProps("parentContactNo"),
+      responsive: ["lg"],
     },
     {
       title: "Parent Profession",
@@ -393,6 +424,7 @@ const ApplicantDetails = () => {
       key: "parentProfession",
       width: 180,
       ...getColumnSearchProps("parentProfession"),
+      responsive: ["lg"],
     },
     {
       title: "Permanent Address",
@@ -400,8 +432,10 @@ const ApplicantDetails = () => {
       key: "permanentAddress",
       width: 250,
       ...getColumnSearchProps("permanentAddress"),
+      responsive: ["lg"],
     },
   ];
+
   return (
     <DefaultLayout>
       <h1>{placementTitle} Placement Drive - Applicant Details</h1>
@@ -422,7 +456,7 @@ const ApplicantDetails = () => {
           columns={columns}
           rowKey="userId"
           bordered
-          scroll={{ x: 2000, y: "calc(100vh - 80px)" }} // Adjust width for horizontal scrolling
+          scroll={{ x: 1500, y: "calc(100vh - 80px)" }} // Adjust width for horizontal scrolling
         />
       </Spin>
     </DefaultLayout>

@@ -17,7 +17,7 @@ const ManagegStudents = lazy(() =>
 const ManagePlacement = lazy(() =>
   import("./pages/ADMIN/ManagePlacement/ManagePlacement.jsx")
 );
-const PlacementList = lazy(() =>
+const StudentDashboard = lazy(() =>
   import("./pages/StudentDashboard/StudentDashboard.jsx")
 );
 const Login = lazy(() => import("./pages/Login/Login"));
@@ -89,7 +89,7 @@ function Main() {
           path="/student/placements"
           element={
             <Suspense fallback={<Loader />}>
-              <PlacementList />
+              <StudentDashboard />
             </Suspense>
           }
         />

@@ -1,7 +1,7 @@
 import { BellOutlined } from "@ant-design/icons";
 import { Badge, Button, Layout, List, Menu, Popover, theme } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { FaTable, FaUserGraduate } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
@@ -9,12 +9,17 @@ import { RiShieldUserFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Title from "../Title/Title";
-import UserAvatar from "../UserAvatar/UserAvatar";
 import "./DefaultLayout.css";
+// Lazy load UserAvatar component
+const UserAvatar = lazy(() => import("../UserAvatar/UserAvatar"));
 
 const { Header, Sider, Content } = Layout;
 
 const DefaultLayout = ({ children }) => {
+  // Fetch usertype from local storage
+  const auth = localStorage.getItem("auth");
+  const userType = auth ? JSON.parse(auth).usertype : null;
+
   const { loading } = useSelector((state) => state.rootReducer);
   const [collapsed, setCollapsed] = useState(true);
   const [placements, setPlacements] = useState([]);
@@ -37,35 +42,36 @@ const DefaultLayout = ({ children }) => {
 
     fetchPlacements();
 
-    // Fetch notifications data
-    const fetchNotifications = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/user/notifications",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const fetchedNotifications = response.data;
-        setNotifications(fetchedNotifications);
-        console.log(fetchedNotifications);
-        // Calculate unread notifications count
-        const countUnread = fetchedNotifications.filter(
-          (notification) => !notification.read
-        ).length;
-        setUnreadCount(countUnread);
-      } catch (error) {
-        setError("Error fetching notifications.");
-        console.error("Error fetching notifications:", error);
-      } finally {
-        setLoadingNotifications(false);
-      }
-    };
+    // Fetch notifications data if the user is a student
+    if (userType === "student") {
+      const fetchNotifications = async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.get(
+            "http://localhost:8080/api/v1/user/notifications",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const fetchedNotifications = response.data;
+          setNotifications(fetchedNotifications);
+          // Calculate unread notifications count
+          const countUnread = fetchedNotifications.filter(
+            (notification) => !notification.read
+          ).length;
+          setUnreadCount(countUnread);
+        } catch (error) {
+          setError("Error fetching notifications.");
+          console.error("Error fetching notifications:", error);
+        } finally {
+          setLoadingNotifications(false);
+        }
+      };
 
-    fetchNotifications();
+      fetchNotifications();
+    }
   }, []);
 
   const handleVisibleChange = (visible) => {
@@ -107,10 +113,6 @@ const DefaultLayout = ({ children }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
-  // Fetch usertype from local storage
-  const auth = localStorage.getItem("auth");
-  const userType = auth ? JSON.parse(auth).usertype : null;
 
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>

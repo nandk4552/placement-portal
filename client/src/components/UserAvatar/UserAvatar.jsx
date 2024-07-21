@@ -1,19 +1,10 @@
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  Modal,
-  message,
-  Space,
-} from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Button, Dropdown, Input, message, Modal } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import "./UserAvatar.css";
-import { HiOutlineLogout } from "react-icons/hi";
 import { FaUserCog } from "react-icons/fa";
+import { HiOutlineLogout } from "react-icons/hi";
+import "./UserAvatar.css";
 
 const UserAvatar = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -104,8 +95,12 @@ const UserAvatar = () => {
   };
 
   useEffect(() => {
-    fetchUserDetails();
-  }, []);
+    const timer = setTimeout(() => {
+      fetchUserDetails();
+    }, 1000); // 1 second delay
+
+    return () => clearTimeout(timer); // Cleanup timeout on component unmount
+  }, [userType]);
 
   const items = [
     {

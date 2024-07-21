@@ -2,6 +2,9 @@ const express = require("express");
 const Placement = require("../models/placementModel"); // Ensure you have a Placement model defined
 const userModel = require("../models/userModel");
 const PlacementApplicationModel = require("../models/placementApplicationModel");
+const {
+  fetchPlacementsWithStatus,
+} = require("../controllers/placementController");
 
 const router = express.Router();
 
@@ -125,6 +128,9 @@ module.exports = (io) => {
         .json({ message: "Error fetching application counts", error });
     }
   });
+
+  // /api/v1/placements/:userId
+  router.get("/:userId", fetchPlacementsWithStatus);
 
   return router;
 };
