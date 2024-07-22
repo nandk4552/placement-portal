@@ -10,6 +10,7 @@ import * as XLSX from "xlsx"; // Importing xlsx for Excel export
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
 import StudentForm from "../../../components/StudentForm/StudentForm";
 import "./StudentsPage.css";
+import { useNavigate } from "react-router-dom";
 
 const confirm = Modal.confirm;
 const { Column } = Table;
@@ -49,8 +50,14 @@ const StudentsPage = () => {
       console.log(error);
     }
   };
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.usertype !== "tpo") {
+      navigate("/student/placements");
+      return;
+    }
     getAllStudents();
   }, []);
 

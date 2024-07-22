@@ -126,12 +126,18 @@ const DefaultLayout = ({ children }) => {
         collapsed={collapsed}
         style={{ overflow: "visible" }}
       >
-        <div className="demo-logo-vertical">
-          <img
-            src="https://vjit.ac.in/wp-content/uploads/2023/05/favicon.png"
-            alt="vjit logo"
-          />
-        </div>
+        <Link
+          to={
+            userType == "student" ? "/student/placements" : "/admin/dashboard"
+          }
+        >
+          <div className="demo-logo-vertical">
+            <img
+              src="https://vjit.ac.in/wp-content/uploads/2023/05/favicon.png"
+              alt="vjit logo"
+            />
+          </div>
+        </Link>
         <Menu
           theme="dark"
           mode="inline"
@@ -139,14 +145,17 @@ const DefaultLayout = ({ children }) => {
         >
           {userType === "student" ? (
             <>
-              <Menu.Item key="/" icon={<IoHome size={"1.5rem"} color="#ccc" />}>
-                <Link to="/">Home</Link>
-              </Menu.Item>
               <Menu.Item
                 key="/student/placements"
-                icon={<FaTable size={"1.5rem"} color="#ccc" />}
+                icon={<IoHome size={"1.5rem"} color="#ccc" />}
               >
                 <Link to="/student/placements">Placements</Link>
+              </Menu.Item>
+              <Menu.Item
+                key="/student/master-data"
+                icon={<FaTable size={"1.5rem"} color="#ccc" />}
+              >
+                <Link to="/student/master-data">Master Data</Link>
               </Menu.Item>
             </>
           ) : (

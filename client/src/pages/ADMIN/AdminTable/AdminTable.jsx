@@ -3,6 +3,8 @@ import { Table, Button, Space, Modal, Form, Input, message } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const AdminTable = () => {
   const [admins, setAdmins] = useState([]);
@@ -10,7 +12,14 @@ const AdminTable = () => {
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [form] = Form.useForm();
 
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (user?.usertype !== "tpo") {
+      navigate("/student/placements");
+      return;
+    }
     fetchAdmins();
   }, []);
 

@@ -9,10 +9,11 @@ import {
   Space,
 } from "antd";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as XLSX from "xlsx"; // Importing xlsx for Excel export
 import { SearchOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const { Column } = Table;
 const { Search } = Input;
@@ -25,7 +26,14 @@ const ApplicantDetails = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchText, setSearchText] = useState("");
 
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (user?.usertype !== "tpo") {
+      navigate("/student/placements");
+      return;
+    }
     fetchPlacementDetails();
     fetchApplicants();
   }, [placementId]);

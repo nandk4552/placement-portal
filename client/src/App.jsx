@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useRef } from "react";
+import React, { lazy, Suspense, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Navigate,
@@ -6,6 +6,7 @@ import {
   BrowserRouter as Router,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
@@ -23,7 +24,7 @@ const StudentDashboard = lazy(() =>
 const Login = lazy(() => import("./pages/Login/Login"));
 const Register = lazy(() => import("./pages/Register/Register"));
 const PageNotFound = lazy(() => import("./pages/PageNotFound/PageNotFound"));
-const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const MasterData = lazy(() => import("./pages/MasterData/MasterData"));
 const AdminTable = lazy(() =>
   import("./pages/ADMIN/AdminTable/AdminTable.jsx")
 );
@@ -53,14 +54,6 @@ function Main() {
       {loading && <Loader />}
       <Routes>
         <Route
-          path="/"
-          element={
-            <Suspense fallback={<Loader />}>
-              <HomePage />
-            </Suspense>
-          }
-        />
-        <Route
           path="/login"
           element={
             <Suspense fallback={<Loader />}>
@@ -86,6 +79,14 @@ function Main() {
           }
         />
         <Route
+          path="/student/master-data"
+          element={
+            <Suspense fallback={<Loader />}>
+              <MasterData />
+            </Suspense>
+          }
+        />
+        <Route
           path="/student/placements"
           element={
             <Suspense fallback={<Loader />}>
@@ -93,8 +94,8 @@ function Main() {
             </Suspense>
           }
         />
-        <Route
-          path="/admin"
+       <Route
+          path="/admin/dashboard"
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
@@ -143,16 +144,7 @@ function Main() {
             </ProtectedRoutes>
           }
         />
-        <Route
-          path="/admin/admin-dashboard"
-          element={
-            <ProtectedRoutes>
-              <Suspense fallback={<Loader />}>
-                <AdminDashboard />
-              </Suspense>
-            </ProtectedRoutes>
-          }
-        />
+      
         <Route
           path="*"
           element={

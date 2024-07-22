@@ -7,10 +7,11 @@ import {
   FaThumbsUp,
   FaGraduationCap,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AdminDashboard.css";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
+import { useSelector } from "react-redux";
 
 const { Header, Content } = Layout;
 
@@ -19,8 +20,14 @@ const AdminDashboard = () => {
   const [placedCount, setPlacedCount] = useState(0);
   const [notPlacedCount, setNotPlacedCount] = useState(0);
   const [placements, setPlacements] = useState([]);
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.usertype !== "tpo") {
+      navigate("/student/placements");
+      return;
+    }
     const timer = setTimeout(() => {
       const fetchStudentCount = async () => {
         try {
@@ -139,7 +146,7 @@ const AdminDashboard = () => {
   return (
     <DefaultLayout>
       <Header style={{ backgroundColor: "#fff" }}>
-        <h1>Admin Stats</h1>
+        <h1>Admin Dashboard</h1>
       </Header>
       <Content style={{ padding: "20px" }}>
         <Row gutter={16}>

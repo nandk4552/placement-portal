@@ -17,7 +17,8 @@ import {
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
 import PlacementForm from "../../../components/PlacementForm/PlacementForm";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const { Column } = Table;
 
@@ -27,8 +28,14 @@ const ManagePlacement = () => {
   const [loading, setLoading] = useState(false);
   const [popupModal, setPopupModal] = useState(false);
   const [editPlacement, setEditPlacement] = useState(null);
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.usertype !== "tpo") {
+      navigate("/student/placements");
+      return;
+    }
     fetchPlacements();
     fetchApplicationCounts();
   }, []);

@@ -14,15 +14,20 @@ import {
   Tabs,
 } from "antd";
 import { FileDoneOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 function StudentDashboard() {
+ 
   const [placements, setPlacements] = useState([]);
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.rootReducer.user);
-
+  const navigate = useNavigate();
   useEffect(() => {
+    if (user?.usertype !== "student") {
+      navigate("/admin/dashboard");
+    }
     fetchPlacements();
   }, []);
 

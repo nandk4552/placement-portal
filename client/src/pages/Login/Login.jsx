@@ -30,6 +30,7 @@ const Login = () => {
       // Store user data in localStorage
       localStorage.setItem("auth", JSON.stringify(data?.user || data?.admin));
       localStorage.setItem("token", data?.token);
+      localStorage.setItem("userType", isStudentLogin ? "student" : "tpo");
 
       // Dispatch action to set user in Redux state
       dispatch({
@@ -38,9 +39,9 @@ const Login = () => {
       });
 
       if (isStudentLogin) {
-        return navigate("/");
+        return navigate("/student/placements");
       } else {
-        return navigate("/admin/");
+        return navigate("/admin/dashboard");
       }
     } catch (error) {
       dispatch({

@@ -2,11 +2,12 @@ import { Button, Card, Col, Form, Input, message, Modal, Row } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
-import "./HomePage.css";
+import "./MasterData.css";
+import { useNavigate } from "react-router-dom";
 
-const HomePage = () => {
+const MasterData = () => {
   const dispatch = useDispatch();
   const [student, setStudent] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -77,8 +78,14 @@ const HomePage = () => {
       console.error(error);
     }
   };
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.usertype !== "student") {
+      navigate("/admin/dashboard");
+      return;
+    }
     getStudentData();
   }, []);
 
@@ -561,4 +568,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default MasterData;
