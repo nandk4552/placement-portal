@@ -11,8 +11,14 @@ const router = express.Router();
 module.exports = (io) => {
   // Create a new placement
   router.post("/", async (req, res) => {
-    const { title, description, date, status } = req.body;
-    const placement = new Placement({ title, description, date, status });
+    const { title, description, date, status, eligibilityCriteria } = req.body;
+    const placement = new Placement({
+      title,
+      description,
+      date,
+      status,
+      eligibilityCriteria,
+    });
     await placement.save();
 
     // Get all users
@@ -35,6 +41,7 @@ module.exports = (io) => {
 
     res.status(201).send(placement);
   });
+  
   // Get all placements
   router.get("/", async (req, res) => {
     const placements = await Placement.find().sort({ date: -1 });

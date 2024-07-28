@@ -1,5 +1,6 @@
 const adminModel = require("../models/adminModel");
 const bcrypt = require("bcryptjs");
+const studentModel = require("../models/studentModel");
 // Create admin
 const createAdmin = async (req, res) => {
   try {
@@ -157,6 +158,24 @@ const updateAdminPasswordController = async (req, res) => {
   }
 };
 
+// logic to fetch master data schema keys and their types
+const getStudentSchemaKeys = async (req, res) => {
+  try {
+    const schemaPaths = studentModel.schema.paths;
+    const schemaKeys = Object.keys(schemaPaths).filter(
+      (key) => key !== "_id" && key !== "__v" && key !== "user"
+    );
+
+    const schemaInfo = schemaKeys.map((key) => ({
+      key,
+      type: schemaPaths[key].instance, // Get the type of the field
+    }));
+
+    res.json(schemaInfo);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   createAdmin,
@@ -166,4 +185,5 @@ module.exports = {
   deleteAdmin,
   getLoggedInAdminDetails,
   updateAdminPasswordController,
+  getStudentSchemaKeys,
 };

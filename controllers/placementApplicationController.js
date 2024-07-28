@@ -1,10 +1,38 @@
 const PlacementApplicationModel = require("../models/placementApplicationModel");
 const studentModel = require("../models/studentModel");
 const placementModel = require("../models/placementModel");
+
+// Function to check if a student is eligible for a placement
+const isEligible = (student, eligibilityCriteria) => {
+  for (const criteria of eligibilityCriteria) {
+    const { key, value, operator } = criteria;
+
+    switch (operator) {
+      case "eq":
+        if (student[key] !== value) return false;
+        break;
+      case "gt":
+        if (student[key] <= value) return false;
+        break;
+      case "lt":
+        if (student[key] >= value) return false;
+        break;
+      case "gte":
+        if (student[key] < value) return false;
+        break;
+      case "lte":
+        if (student[key] > value) return false;
+        break;
+      default:
+        return false;
+    }
+  }
+  return true;
+};
+
 const placementApplicationApply = async (req, res) => {
   try {
     const { userId, placementId } = req.body;
-
     // Check if the application already exists
     const existingApplication = await PlacementApplicationModel.findOne({
       userId,
@@ -15,6 +43,24 @@ const placementApplicationApply = async (req, res) => {
       return res
         .status(409)
         .json({ message: "Already applied for the placement" });
+    }
+    // Fetch the student details
+    const student = await studentModel.findById({ user: userId });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Fetch the placement details
+    const placement = await placementModel.findById(placementId);
+    if (!placement) {
+      return res.status(404).json({ message: "Placement not found" });
+    }
+
+    // Check if the student meets the eligibility criteria
+    if (!isEligible(student, placement.eligibilityCriteria)) {
+      return res
+        .status(403)
+        .json({ message: "You are not eligible for this placement" });
     }
 
     // Create and save the new application
@@ -29,6 +75,35 @@ const placementApplicationApply = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// const placementApplicationApply = async (req, res) => {
+//   try {
+//     const { userId, placementId } = req.body;
+
+//     // Check if the application already exists
+//     const existingApplication = await PlacementApplicationModel.findOne({
+//       userId,
+//       placementId,
+//     });
+
+//     if (existingApplication) {
+//       return res
+//         .status(409)
+//         .json({ message: "Already applied for the placement" });
+//     }
+
+//     // Create and save the new application
+//     const application = new PlacementApplicationModel({ userId, placementId });
+//     await application.save();
+
+//     return res
+//       .status(201)
+//       .json({ message: "Application submitted successfully" });
+//   } catch (error) {
+//     console.error("Error submitting application:", error);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 const placementApplicationByUserId = async (req, res) => {
   const { userId } = req.params;
 

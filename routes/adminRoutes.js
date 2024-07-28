@@ -7,6 +7,7 @@ const {
   deleteAdmin,
   getLoggedInAdminDetails,
   updateAdminPasswordController,
+  getStudentSchemaKeys,
 } = require("../controllers/adminController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
@@ -47,4 +48,11 @@ router.put("/update/:id", authMiddleware, adminMiddleware, updateAdmin);
 // Delete admin
 router.delete("/delete/:id", authMiddleware, adminMiddleware, deleteAdmin);
 
+// * fetch student schemam keys dynamically to render in tpo criteria while adding a new placement
+router.get(
+  "/schema-keys",
+  authMiddleware,
+  adminMiddleware,
+  getStudentSchemaKeys
+);
 module.exports = router;

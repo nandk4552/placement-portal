@@ -37,6 +37,9 @@ const studentSchema = new mongoose.Schema({
   parentContactNo: String,
   parentProfession: String,
   permanentAddress: String,
+  resume: String,
+  joined: Date,
+  passout: Date,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

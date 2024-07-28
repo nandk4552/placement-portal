@@ -10,6 +10,17 @@ const placementSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    eligibilityCriteria: [
+      {
+        key: String,
+        value: mongoose.Schema.Types.Mixed,
+        operator: {
+          type: String,
+          enum: ["eq", "gt", "lt", "gte", "lte"],
+          default: "eq",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

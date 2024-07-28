@@ -11,11 +11,11 @@ const {
   getStudentByRollNo,
   getStudentCount,
   updateStudentDetails,
+  getStudentSchemaKeys,
 } = require("../controllers/studentController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const adminMiddleware = require("../middlewares/adminMiddleware");
 const studentMiddleware = require("../middlewares/studentMiddleware");
-const studentModel = require("../models/studentModel");
 
 const router = express.Router();
 
@@ -61,4 +61,5 @@ router.put(
 );
 //* update student details || PUT || api/v1/student/update
 router.put("/update", authMiddleware, studentMiddleware, updateStudentDetails);
+
 module.exports = router;

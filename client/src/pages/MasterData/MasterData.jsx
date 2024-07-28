@@ -1,6 +1,6 @@
-import { Button, Card, Col, Form, Input, message, Modal, Row } from "antd";
+import { Button, Card, Col, Form, Input, message, Row } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 
 const MasterData = () => {
   const dispatch = useDispatch();
-  const [student, setStudent] = useState({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const user = useSelector((state) => state.rootReducer.user);
+  const navigate = useNavigate();
 
   // Function to fetch student data
   const getStudentData = async () => {
@@ -25,7 +25,7 @@ const MasterData = () => {
           },
         }
       );
-      setStudent(data?.student || {});
+      form.setFieldsValue(data?.student || {});
       dispatch({ type: "rootReducer/hideLoading" });
     } catch (error) {
       dispatch({ type: "rootReducer/hideLoading" });
@@ -33,33 +33,10 @@ const MasterData = () => {
     }
   };
 
-  // Function to handle the edit button click
-  const handleEdit = () => {
-    form.setFieldsValue(student);
-    setIsModalVisible(true);
-  };
-
-  // Function to handle the OK button click in the modal
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        handleUpdateStudent(values);
-        setIsModalVisible(false);
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
-  };
-
-  // Function to handle the Cancel button click in the modal
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // Function to update the student data
-  const handleUpdateStudent = async (values) => {
+  // Function to handle the update button click
+  const handleUpdate = async () => {
     try {
+      const values = await form.validateFields();
       dispatch({ type: "rootReducer/showLoading" });
       await axios.put(
         `${import.meta.env.VITE_SERVER}/api/v1/student/update`,
@@ -76,10 +53,9 @@ const MasterData = () => {
     } catch (error) {
       dispatch({ type: "rootReducer/hideLoading" });
       console.error(error);
+      message.error("Failed to update student data. Please try again.");
     }
   };
-  const user = useSelector((state) => state.rootReducer.user);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user?.usertype !== "student") {
@@ -87,7 +63,7 @@ const MasterData = () => {
       return;
     }
     getStudentData();
-  }, []);
+  }, [user, navigate]);
 
   return (
     <DefaultLayout>
@@ -100,128 +76,13 @@ const MasterData = () => {
             title={
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Student Details</span>
-                <Button type="primary" onClick={handleEdit}>
-                  Edit Details
+                <Button type="primary" onClick={handleUpdate}>
+                  Update Details
                 </Button>
               </div>
             }
             bordered={false}
             className="student-card"
-          >
-            <Row gutter={16}>
-              <Col xs={24} md={12} lg={8}>
-                <p>
-                  <strong>Name:</strong> {student.name}
-                </p>
-                <p>
-                  <strong>Roll No:</strong> {student.rollNumber}
-                </p>
-                <p>
-                  <strong>Email:</strong> {student.email}
-                </p>
-                <p>
-                  <strong>Alternate Email:</strong> {student.alternateEmail}
-                </p>
-                <p>
-                  <strong>Mobile Number:</strong> {student.mobileNumber}
-                </p>
-                <p>
-                  <strong>Branch:</strong> {student.branch}
-                </p>
-                <p>
-                  <strong>Gender:</strong> {student.gender}
-                </p>
-                <p>
-                  <strong>Date of Birth:</strong>{" "}
-                  {new Date(student.dateOfBirth).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Caste:</strong> {student.caste}
-                </p>
-                <p>
-                  <strong>Current Backlogs:</strong> {student.currentBacklogs}
-                </p>
-              </Col>
-              <Col xs={24} md={12} lg={8}>
-                <p>
-                  <strong>B.Tech Percentage:</strong> {student.btechPercentage}
-                </p>
-                <p>
-                  <strong>B.Tech CGPA:</strong> {student.btechCgpa}
-                </p>
-
-                <p>
-                  <strong>SSC CGPA:</strong> {student.sscCgpa}
-                </p>
-                <p>
-                  <strong>SSC Board:</strong> {student.sscBoard}
-                </p>
-                <p>
-                  <strong>Tenth Year of Pass:</strong> {student.tenthYearOfPass}
-                </p>
-                <p>
-                  <strong>Intermediate Percentage:</strong>{" "}
-                  {student.intermediatePercentage}
-                </p>
-                <p>
-                  <strong>Intermediate:</strong> {student.intermediate}
-                </p>
-                <p>
-                  <strong>Intermediate Pass Out Year:</strong>{" "}
-                  {student.intermediatePassOutYear}
-                </p>
-                <p>
-                  <strong>B.Tech Course Joined Through:</strong>{" "}
-                  {student.btechCourseJoinedThrough}
-                </p>
-                <p>
-                  <strong>EMCAT ECET Rank:</strong> {student.emcatEcetRank}
-                </p>
-              </Col>
-              <Col xs={24} md={12} lg={8}>
-                <p>
-                  <strong>Aadhar Card Number:</strong>{" "}
-                  {student.aadharCardNumber}
-                </p>
-                <p>
-                  <strong>Career Goal:</strong> {student.careerGoal}
-                </p>
-                <p>
-                  <strong>Passport Photo:</strong>{" "}
-                  <a
-                    href={student.passportPhoto}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View Photo
-                  </a>
-                </p>
-                <p>
-                  <strong>Interested In:</strong> {student.interestedIn}
-                </p>
-                <p>
-                  <strong>Father's Name:</strong> {student.fatherName}
-                </p>
-                <p>
-                  <strong>Mother's Name:</strong> {student.motherName}
-                </p>
-                <p>
-                  <strong>Parent Contact No:</strong> {student.parentContactNo}
-                </p>
-                <p>
-                  <strong>Parent Profession:</strong> {student.parentProfession}
-                </p>
-                <p>
-                  <strong>Permanent Address:</strong> {student.permanentAddress}
-                </p>
-              </Col>
-            </Row>
-          </Card>
-          <Modal
-            title="Edit Student Details"
-            open={isModalVisible}
-            onOk={handleOk}
-            onCancel={handleCancel}
           >
             <Form form={form} layout="vertical">
               <Row gutter={16}>
@@ -307,6 +168,15 @@ const MasterData = () => {
                   >
                     <Input placeholder="Update Date of Birth" />
                   </Form.Item>
+                  <Form.Item
+                    label="Caste"
+                    name="caste"
+                    rules={[
+                      { required: true, message: "Please input the Caste!" },
+                    ]}
+                  >
+                    <Input placeholder="Update Caste" />
+                  </Form.Item>
                 </Col>
                 <Col xs={24} md={12} lg={8}>
                   <Form.Item
@@ -386,7 +256,7 @@ const MasterData = () => {
                         required: true,
                         message:
                           "Please input the B.Tech Course Joined Through!",
-                      },
+                      },  
                     ]}
                   >
                     <Input placeholder="Update B.Tech Course Joined Through" />
@@ -403,8 +273,44 @@ const MasterData = () => {
                   >
                     <Input placeholder="Update EMCAT ECET Rank" />
                   </Form.Item>
+                  <Form.Item
+                    label="Current Backlogs"
+                    name="currentBacklogs"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the Current Backlogs!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Update Current Backlogs" />
+                  </Form.Item>
                 </Col>
                 <Col xs={24} md={12} lg={8}>
+                  <Form.Item
+                    label="B.Tech joined Year"
+                    name="joined"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the B.Tech joined Year!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Update B.Tech joined Year" />
+                  </Form.Item>
+                  <Form.Item
+                    label="B.Tech passout Year"
+                    name="passout"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the B.Tech passout Year!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Update B.Tech passout Year" />
+                  </Form.Item>
                   <Form.Item
                     label="B.Tech Percentage"
                     name="btechPercentage"
@@ -428,27 +334,6 @@ const MasterData = () => {
                     ]}
                   >
                     <Input placeholder="Update B.Tech CGPA" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Current Backlogs"
-                    name="currentBacklogs"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Current Backlogs!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Update Current Backlogs" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Caste"
-                    name="caste"
-                    rules={[
-                      { required: true, message: "Please input the Caste!" },
-                    ]}
-                  >
-                    <Input placeholder="Update Caste" />
                   </Form.Item>
                   <Form.Item
                     label="Aadhar Card Number"
@@ -475,30 +360,6 @@ const MasterData = () => {
                     <Input placeholder="Update Career Goal" />
                   </Form.Item>
                   <Form.Item
-                    label="Passport Photo"
-                    name="passportPhoto"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Passport Photo URL!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Update Passport Photo URL" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Interested In"
-                    name="interestedIn"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Interested In!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Update Interested In" />
-                  </Form.Item>
-                  <Form.Item
                     label="Father's Name"
                     name="fatherName"
                     rules={[
@@ -511,57 +372,45 @@ const MasterData = () => {
                     <Input placeholder="Update Father's Name" />
                   </Form.Item>
                   <Form.Item
-                    label="Mother's Name"
-                    name="motherName"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Mother's Name!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Update Mother's Name" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Parent Contact No"
+                    label="Father's Mobile Number"
                     name="parentContactNo"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the Parent Contact No!",
+                        message: "Please input the Father's Mobile Number!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update Parent Contact No" />
+                    <Input placeholder="Update Father's Mobile Number" />
                   </Form.Item>
                   <Form.Item
-                    label="Parent Profession"
-                    name="parentProfession"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the Parent Profession!",
-                      },
-                    ]}
-                  >
-                    <Input placeholder="Update Parent Profession" />
-                  </Form.Item>
-                  <Form.Item
-                    label="Permanent Address"
+                    label="permanentAddress"
                     name="permanentAddress"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the Permanent Address!",
+                        message: "Please input the permanentAddress!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update Permanent Address" />
+                    <Input placeholder="Update permanentAddress" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Student Profile Image URL"
+                    name="passportPhoto"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the Student Profile Image URL!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Update Student Profile Image URL" />
                   </Form.Item>
                 </Col>
               </Row>
             </Form>
-          </Modal>
+          </Card>
         </div>
       </div>
     </DefaultLayout>

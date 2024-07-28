@@ -51,7 +51,7 @@ const updateStudent = async (req, res) => {
       }
     );
     if (!student) {
-      return res
+      return resresume
         .status(404)
         .send({ success: false, message: "Student not found" });
     }
@@ -230,6 +230,7 @@ const updateStudentDetails = async (req, res) => {
       parentContactNo,
       parentProfession,
       permanentAddress,
+      resume,
     } = req.body;
 
     // Validate required fields
@@ -274,6 +275,7 @@ const updateStudentDetails = async (req, res) => {
       parentContactNo,
       parentProfession,
       permanentAddress,
+      resume,
     };
 
     // Find the student associated with the user and update

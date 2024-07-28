@@ -7,15 +7,16 @@ import {
   Button,
   Input,
   Space,
+  Select,
 } from "antd";
 import DefaultLayout from "../../../components/DefaultLayout/DefaultLayout";
 import { useNavigate, useParams } from "react-router-dom";
-import * as XLSX from "xlsx"; // Importing xlsx for Excel export
+import * as XLSX from "xlsx";
 import { SearchOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
-const { Column } = Table;
+const { Option } = Select;
 const { Search } = Input;
 
 const ApplicantDetails = () => {
@@ -25,6 +26,7 @@ const ApplicantDetails = () => {
   const [placementTitle, setPlacementTitle] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [selectedColumns, setSelectedColumns] = useState([]);
 
   const user = useSelector((state) => state.rootReducer.user);
   const navigate = useNavigate();
@@ -83,7 +85,7 @@ const ApplicantDetails = () => {
         appliedDate: applicant.appliedDate,
       }));
       setApplicants(formattedData);
-      setFilteredData(formattedData); // Initialize filteredData
+      setFilteredData(formattedData);
     } catch (error) {
       antNotification.error({
         message: "Error",
@@ -111,14 +113,40 @@ const ApplicantDetails = () => {
     setSearchText(value);
     const filtered = applicants.filter((applicant) =>
       Object.values(applicant).some((val) =>
+        val !== undefined &&
+        val !== null &&
         val.toString().toLowerCase().includes(value.toLowerCase())
       )
     );
+    console.log("Filtered applicants:", filtered); // Debugging line
     setFilteredData(filtered);
   };
 
   const handleExport = () => {
-    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const columnsToExport = [
+      "S.No",
+      "rollNumber",
+      "name",
+      "email",
+      ...selectedColumns,
+    ];
+
+    const filteredExportData = filteredData.map((item, index) => {
+      const newItem = {
+        "S.No": index + 1,
+        rollNumber: item.rollNumber,
+        name: item.name,
+        email: item.email,
+      };
+
+      selectedColumns.forEach((col) => {
+        newItem[col] = item[col];
+      });
+
+      return newItem;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(filteredExportData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Applicants");
     const fileName = `${placementTitle}_Applicants.xlsx`;
@@ -175,7 +203,7 @@ const ApplicantDetails = () => {
     render: (text) => text,
   });
 
-  const columns = [
+  const allColumns = [
     {
       title: "S.No",
       key: "index",
@@ -281,15 +309,15 @@ const ApplicantDetails = () => {
       title: "SSC Board",
       dataIndex: "sscBoard",
       key: "sscBoard",
-      width: 150,
+      width: 120,
       ...getColumnSearchProps("sscBoard"),
       responsive: ["lg"],
     },
     {
-      title: "10th Year of Pass",
+      title: "Tenth Year of Pass",
       dataIndex: "tenthYearOfPass",
       key: "tenthYearOfPass",
-      width: 150,
+      width: 180,
       ...getColumnSearchProps("tenthYearOfPass"),
       responsive: ["lg"],
     },
@@ -297,7 +325,7 @@ const ApplicantDetails = () => {
       title: "Intermediate Percentage",
       dataIndex: "intermediatePercentage",
       key: "intermediatePercentage",
-      width: 180,
+      width: 200,
       ...getColumnSearchProps("intermediatePercentage"),
       responsive: ["lg"],
     },
@@ -318,15 +346,15 @@ const ApplicantDetails = () => {
       responsive: ["lg"],
     },
     {
-      title: "BTech Course Joined Through",
+      title: "B.Tech Course Joined Through",
       dataIndex: "btechCourseJoinedThrough",
       key: "btechCourseJoinedThrough",
-      width: 200,
+      width: 220,
       ...getColumnSearchProps("btechCourseJoinedThrough"),
       responsive: ["lg"],
     },
     {
-      title: "EMCAT/ECET Rank",
+      title: "EMCAT ECET Rank",
       dataIndex: "emcatEcetRank",
       key: "emcatEcetRank",
       width: 150,
@@ -334,7 +362,7 @@ const ApplicantDetails = () => {
       responsive: ["lg"],
     },
     {
-      title: "BTech Percentage",
+      title: "B.Tech Percentage",
       dataIndex: "btechPercentage",
       key: "btechPercentage",
       width: 150,
@@ -342,10 +370,10 @@ const ApplicantDetails = () => {
       responsive: ["lg"],
     },
     {
-      title: "BTech CGPA",
+      title: "B.Tech CGPA",
       dataIndex: "btechCgpa",
       key: "btechCgpa",
-      width: 120,
+      width: 150,
       ...getColumnSearchProps("btechCgpa"),
       responsive: ["lg"],
     },
@@ -361,7 +389,7 @@ const ApplicantDetails = () => {
       title: "Caste",
       dataIndex: "caste",
       key: "caste",
-      width: 120,
+      width: 150,
       ...getColumnSearchProps("caste"),
       responsive: ["lg"],
     },
@@ -369,7 +397,7 @@ const ApplicantDetails = () => {
       title: "Aadhar Card Number",
       dataIndex: "aadharCardNumber",
       key: "aadharCardNumber",
-      width: 200,
+      width: 180,
       ...getColumnSearchProps("aadharCardNumber"),
       responsive: ["lg"],
     },
@@ -377,7 +405,7 @@ const ApplicantDetails = () => {
       title: "Career Goal",
       dataIndex: "careerGoal",
       key: "careerGoal",
-      width: 200,
+      width: 150,
       ...getColumnSearchProps("careerGoal"),
       responsive: ["lg"],
     },
@@ -386,11 +414,6 @@ const ApplicantDetails = () => {
       dataIndex: "passportPhoto",
       key: "passportPhoto",
       width: 150,
-      render: (text) => (
-        <a href={text} target="_blank" rel="noopener noreferrer">
-          View Photo
-        </a>
-      ),
       ...getColumnSearchProps("passportPhoto"),
       responsive: ["lg"],
     },
@@ -398,12 +421,12 @@ const ApplicantDetails = () => {
       title: "Interested In",
       dataIndex: "interestedIn",
       key: "interestedIn",
-      width: 200,
+      width: 150,
       ...getColumnSearchProps("interestedIn"),
       responsive: ["lg"],
     },
     {
-      title: "Father Name",
+      title: "Father's Name",
       dataIndex: "fatherName",
       key: "fatherName",
       width: 150,
@@ -411,7 +434,7 @@ const ApplicantDetails = () => {
       responsive: ["lg"],
     },
     {
-      title: "Mother Name",
+      title: "Mother's Name",
       dataIndex: "motherName",
       key: "motherName",
       width: 150,
@@ -419,10 +442,10 @@ const ApplicantDetails = () => {
       responsive: ["lg"],
     },
     {
-      title: "Parent Contact No",
+      title: "Parent Contact Number",
       dataIndex: "parentContactNo",
       key: "parentContactNo",
-      width: 150,
+      width: 200,
       ...getColumnSearchProps("parentContactNo"),
       responsive: ["lg"],
     },
@@ -438,11 +461,32 @@ const ApplicantDetails = () => {
       title: "Permanent Address",
       dataIndex: "permanentAddress",
       key: "permanentAddress",
-      width: 250,
+      width: 200,
       ...getColumnSearchProps("permanentAddress"),
       responsive: ["lg"],
     },
+    {
+      title: "Applied Date",
+      dataIndex: "appliedDate",
+      key: "appliedDate",
+      width: 150,
+      render: (appliedDate) =>
+        appliedDate ? moment(appliedDate).format("DD/MM/YYYY") : "",
+      ...getColumnSearchProps("appliedDate"),
+      responsive: ["lg"],
+    },
   ];
+
+  const selectableColumns = allColumns.filter(
+    (col) =>
+      col.key && !["S.No", "rollNumber", "name", "email"].includes(col.key)
+  );
+
+  const columns = allColumns.filter(
+    (col) =>
+      ["index", "rollNumber", "name", "email"].includes(col.key) ||
+      selectedColumns.includes(col.key)
+  );
 
   return (
     <DefaultLayout>
@@ -457,14 +501,26 @@ const ApplicantDetails = () => {
           Export to Excel
         </Button>
       </Space>
+      <Select
+        mode="multiple"
+        style={{ width: "100%" }}
+        placeholder="Select columns to display"
+        onChange={(value) => setSelectedColumns(value)}
+      >
+        {selectableColumns.map((col) => (
+          <Option key={col.key} value={col.key}>
+            {col.title}
+          </Option>
+        ))}
+      </Select>
+
       <Spin spinning={loading}>
         <Table
-          size="small"
-          dataSource={filteredData}
           columns={columns}
+          dataSource={filteredData}
           rowKey="userId"
-          bordered
-          scroll={{ x: 1500, y: "calc(100vh - 80px)" }} // Adjust width for horizontal scrolling
+          pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content " }}
         />
       </Spin>
     </DefaultLayout>
