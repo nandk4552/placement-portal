@@ -12,8 +12,8 @@ import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 import Notification from "./components/Notification/Notification.jsx";
 import ApplicantDetails from "./pages/ADMIN/ApplicantDetails/ApplicantDetails.jsx";
-const ManagegStudents = lazy(() =>
-  import("./pages/ADMIN/ManagegStudents/ManagegStudents.jsx")
+const ManageStudents = lazy(() =>
+  import("./pages/ADMIN/ManageStudents/ManageStudents.jsx")
 );
 const ManagePlacement = lazy(() =>
   import("./pages/ADMIN/ManagePlacement/ManagePlacement.jsx")
@@ -94,7 +94,7 @@ function Main() {
             </Suspense>
           }
         />
-       <Route
+        <Route
           path="/admin/dashboard"
           element={
             <ProtectedRoutes>
@@ -119,7 +119,7 @@ function Main() {
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
-                <ManagegStudents />
+                <ManageStudents />
               </Suspense>
             </ProtectedRoutes>
           }
@@ -144,7 +144,7 @@ function Main() {
             </ProtectedRoutes>
           }
         />
-      
+
         <Route
           path="*"
           element={

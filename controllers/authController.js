@@ -35,25 +35,40 @@ const registerController = async (req, res) => {
     //* Save user to database (password will be hashed due to pre-save hook)
     await user.save();
 
-    //* Find the corresponding student and link the user
-    const student = await studentModel.findOneAndUpdate(
-      { rollNumber: rollno },
-      { user: user._id },
-      { new: true }
-    );
-    if (!student) {
-      return res.status(404).send({
-        success: false,
-        message: "Student not found",
+    //* Check if the student is registered in the master data
+    const isMasterDataOfStudentExist = await studentModel.findOne({
+      rollNumber: rollno,
+    });
+
+    if (isMasterDataOfStudentExist) {
+      //* Find the corresponding student and link the user
+      const student = await studentModel.findOneAndUpdate(
+        { rollNumber: rollno },
+        { user: user._id },
+        { new: true }
+      );
+      if (!student) {
+        return res.status(404).send({
+          success: false,
+          message: "Student not found",
+        });
+      }
+
+      //* success response
+      res.status(201).send({
+        success: true,
+        message: "Student Created successfully",
+        user,
+      });
+    } else {
+      //* success response
+      res.status(201).send({
+        success: true,
+        message:
+          "user created master data not found please register your master data with us!",
+        user,
       });
     }
-
-    //* success response
-    res.status(201).send({
-      success: true,
-      message: "Student Created successfully",
-      user,
-    });
   } catch (error) {
     res.status(400).send(error.message);
   }

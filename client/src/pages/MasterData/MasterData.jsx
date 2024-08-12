@@ -1,17 +1,35 @@
-import { Button, Card, Col, Form, Input, message, Row } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Row,
+  Select,
+} from "antd";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import "./MasterData.css";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+const formatDate = (date) => {
+  return date ? moment(date).format("YYYY-MM-DD") : null;
+};
+const formatYear = (date) => {
+  return date ? moment(date).format("YYYY") : null;
+};
 
 const MasterData = () => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const user = useSelector((state) => state.rootReducer.user);
   const navigate = useNavigate();
+  const [isMasterData, setIsMasterData] = useState(false);
 
   // Function to fetch student data
   const getStudentData = async () => {
@@ -25,7 +43,27 @@ const MasterData = () => {
           },
         }
       );
-      form.setFieldsValue(data?.student || {});
+      if (data?.student) {
+        setIsMasterData(true);
+        // Properly format the dates for the form
+        const formattedStudentData = {
+          ...data.student,
+          dateOfBirth: data.student.dateOfBirth
+            ? moment(data.student.dateOfBirth)
+            : null,
+          joinedBtech: data.student.joinedBtech
+            ? moment(data.student.joinedBtech)
+            : null,
+          passoutBtech: data.student.passoutBtech
+            ? moment(data.student.passoutBtech)
+            : null,
+        };
+        console.log("Formatted Student Data:", formattedStudentData);
+        form.setFieldsValue(formattedStudentData);
+      } else {
+        setIsMasterData(false);
+        form.resetFields();
+      }
       dispatch({ type: "rootReducer/hideLoading" });
     } catch (error) {
       dispatch({ type: "rootReducer/hideLoading" });
@@ -33,27 +71,43 @@ const MasterData = () => {
     }
   };
 
-  // Function to handle the update button click
-  const handleUpdate = async () => {
+  const handleSubmit = async (value) => {
+    // Ensure date fields are formatted correctly for submission
+
+    const finalValues = {
+      ...value,
+      dateOfBirth: formatDate(value.dateOfBirth),
+    };
+
+    console.log("Final Values:", finalValues);
+
     try {
-      const values = await form.validateFields();
-      dispatch({ type: "rootReducer/showLoading" });
-      await axios.put(
-        `${import.meta.env.VITE_SERVER}/api/v1/student/update`,
-        values,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      message.success("Student Updated Successfully");
+      dispatch({
+        type: "rootReducer/showLoading",
+      });
+      const url = isMasterData
+        ? `${import.meta.env.VITE_SERVER}/api/v1/student/update`
+        : `${import.meta.env.VITE_SERVER}/api/v1/student/create`;
+
+      const method = isMasterData ? "put" : "post";
+
+      const { data } = await axios[method](url, finalValues, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      message.success(data?.message);
       getStudentData();
-      dispatch({ type: "rootReducer/hideLoading" });
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
     } catch (error) {
-      dispatch({ type: "rootReducer/hideLoading" });
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
+      message.error("Something went wrong!");
       console.error(error);
-      message.error("Failed to update student data. Please try again.");
     }
   };
 
@@ -76,15 +130,15 @@ const MasterData = () => {
             title={
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Student Details</span>
-                <Button type="primary" onClick={handleUpdate}>
-                  Update Details
+                <Button type="primary" onClick={() => form.submit()}>
+                  {isMasterData ? "Update Details" : "Add Details"}
                 </Button>
               </div>
             }
             bordered={false}
             className="student-card"
           >
-            <Form form={form} layout="vertical">
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
               <Row gutter={16}>
                 <Col xs={24} md={12} lg={8}>
                   <Form.Item
@@ -94,7 +148,7 @@ const MasterData = () => {
                       { required: true, message: "Please input the name!" },
                     ]}
                   >
-                    <Input placeholder="Update Name" />
+                    <Input placeholder="Add Name" />
                   </Form.Item>
                   <Form.Item
                     label="Roll No"
@@ -103,7 +157,7 @@ const MasterData = () => {
                       { required: true, message: "Please input the Roll No!" },
                     ]}
                   >
-                    <Input placeholder="Update Roll No" />
+                    <Input placeholder="Add Roll No" />
                   </Form.Item>
                   <Form.Item
                     label="Email"
@@ -112,7 +166,7 @@ const MasterData = () => {
                       { required: true, message: "Please input the email!" },
                     ]}
                   >
-                    <Input type="email" placeholder="Update Email" />
+                    <Input type="email" placeholder="Add Email" />
                   </Form.Item>
                   <Form.Item
                     label="Alternate Email"
@@ -124,7 +178,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input type="email" placeholder="Update Alternate Email" />
+                    <Input type="email" placeholder="Add Alternate Email" />
                   </Form.Item>
                   <Form.Item
                     label="Mobile Number"
@@ -136,7 +190,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Mobile Number" />
+                    <Input placeholder="Add Mobile Number" />
                   </Form.Item>
                   <Form.Item
                     label="Branch"
@@ -145,7 +199,7 @@ const MasterData = () => {
                       { required: true, message: "Please input the Branch!" },
                     ]}
                   >
-                    <Input placeholder="Update Branch" />
+                    <Input placeholder="Add Branch" />
                   </Form.Item>
                   <Form.Item
                     label="Gender"
@@ -154,8 +208,9 @@ const MasterData = () => {
                       { required: true, message: "Please input the Gender!" },
                     ]}
                   >
-                    <Input placeholder="Update Gender" />
+                    <Input placeholder="Add Gender" />
                   </Form.Item>
+
                   <Form.Item
                     label="Date of Birth"
                     name="dateOfBirth"
@@ -166,8 +221,13 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Date of Birth" />
+                    <DatePicker
+                      format="DD/MM/YYYY"
+                      placeholder="Select Date of Birth"
+                      style={{ width: "100%" }}
+                    />
                   </Form.Item>
+
                   <Form.Item
                     label="Caste"
                     name="caste"
@@ -175,18 +235,18 @@ const MasterData = () => {
                       { required: true, message: "Please input the Caste!" },
                     ]}
                   >
-                    <Input placeholder="Update Caste" />
+                    <Input placeholder="Add Caste" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12} lg={8}>
                   <Form.Item
-                    label="SSC CGPA"
+                    label="SSC  CGPA"
                     name="sscCgpa"
                     rules={[
                       { required: true, message: "Please input the SSC CGPA!" },
                     ]}
                   >
-                    <Input placeholder="Update SSC CGPA" />
+                    <Input placeholder="Add SSC CGPA" />
                   </Form.Item>
                   <Form.Item
                     label="SSC Board"
@@ -198,7 +258,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update SSC Board" />
+                    <Input placeholder="Add SSC Board" />
                   </Form.Item>
                   <Form.Item
                     label="Tenth Year of Pass"
@@ -210,7 +270,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Tenth Year of Pass" />
+                    <Input placeholder="Add Tenth Year of Pass" />
                   </Form.Item>
                   <Form.Item
                     label="Intermediate Percentage"
@@ -222,31 +282,38 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Intermediate Percentage" />
+                    <Input placeholder="Add Intermediate Percentage" />
                   </Form.Item>
                   <Form.Item
-                    label="Intermediate"
+                    label="Intermediate / Diploma"
                     name="intermediate"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the Intermediate!",
+                        message: "Please select the Intermediate or Diploma!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update Intermediate" />
+                    <Select placeholder="Select Intermediate or Diploma">
+                      <Select.Option value="Intermediate">
+                        Intermediate
+                      </Select.Option>
+                      <Select.Option value="Diploma">Diploma</Select.Option>
+                    </Select>
                   </Form.Item>
+
                   <Form.Item
-                    label="Intermediate Pass Out Year"
+                    label="Intermediate / Diploma Pass Out Year"
                     name="intermediatePassOutYear"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the Intermediate Pass Out Year!",
+                        message:
+                          "Please input the Intermediate / Diploma Pass Out Year!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update Intermediate Pass Out Year" />
+                    <Input placeholder="Add Intermediate / Diploma Pass Out Year" />
                   </Form.Item>
                   <Form.Item
                     label="B.Tech Course Joined Through"
@@ -256,22 +323,22 @@ const MasterData = () => {
                         required: true,
                         message:
                           "Please input the B.Tech Course Joined Through!",
-                      },  
+                      },
                     ]}
                   >
-                    <Input placeholder="Update B.Tech Course Joined Through" />
+                    <Input placeholder="Add B.Tech Course Joined Through" />
                   </Form.Item>
                   <Form.Item
-                    label="EMCAT ECET Rank"
+                    label="EMCAT / ECET Rank"
                     name="emcatEcetRank"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the EMCAT ECET Rank!",
+                        message: "Please input the EMCAT / ECET Rank!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update EMCAT ECET Rank" />
+                    <Input placeholder="Add EMCAT / ECET Rank" />
                   </Form.Item>
                   <Form.Item
                     label="Current Backlogs"
@@ -283,33 +350,36 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Current Backlogs" />
+                    <Input placeholder="Add Current Backlogs" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12} lg={8}>
                   <Form.Item
-                    label="B.Tech joined Year"
-                    name="joined"
+                    label="Btech Joined Year"
+                    name="btechJoinedYear"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the B.Tech joined Year!",
+                        message: "Please input the Btech Joined Year!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update B.Tech joined Year" />
+                    <Input type="number" placeholder="Add Btech Joined Year" />
                   </Form.Item>
                   <Form.Item
-                    label="B.Tech passout Year"
-                    name="passout"
+                    label="Btech Pass Out Year"
+                    name="btechPassOutYear"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the B.Tech passout Year!",
+                        message: "Please input the Btech Pass Out Year!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update B.Tech passout Year" />
+                    <Input
+                      type="number"
+                      placeholder="Add Btech Pass Out Year"
+                    />
                   </Form.Item>
                   <Form.Item
                     label="B.Tech Percentage"
@@ -321,7 +391,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update B.Tech Percentage" />
+                    <Input placeholder="Add B.Tech Percentage" />
                   </Form.Item>
                   <Form.Item
                     label="B.Tech CGPA"
@@ -333,7 +403,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update B.Tech CGPA" />
+                    <Input placeholder="Add B.Tech CGPA" />
                   </Form.Item>
                   <Form.Item
                     label="Aadhar Card Number"
@@ -345,7 +415,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Aadhar Card Number" />
+                    <Input placeholder="Add Aadhar Card Number" />
                   </Form.Item>
                   <Form.Item
                     label="Career Goal"
@@ -357,7 +427,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Career Goal" />
+                    <Input placeholder="Add Career Goal" />
                   </Form.Item>
                   <Form.Item
                     label="Father's Name"
@@ -369,7 +439,7 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Father's Name" />
+                    <Input placeholder="Add Father's Name" />
                   </Form.Item>
                   <Form.Item
                     label="Father's Mobile Number"
@@ -381,21 +451,24 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Father's Mobile Number" />
+                    <Input placeholder="Add Father's Mobile Number" />
                   </Form.Item>
                   <Form.Item
-                    label="permanentAddress"
+                    label="Permanent Address"
                     name="permanentAddress"
                     rules={[
                       {
                         required: true,
-                        message: "Please input the permanentAddress!",
+                        message: "Please input the Permanent Address!",
                       },
                     ]}
                   >
-                    <Input placeholder="Update permanentAddress" />
+                    <Input placeholder="Add Permanent Address" />
                   </Form.Item>
-                  <Form.Item
+                 
+                </Col>
+                <Col xs={24} md={12} lg={8}>
+                <Form.Item
                     label="Student Profile Image URL"
                     name="passportPhoto"
                     rules={[
@@ -405,7 +478,19 @@ const MasterData = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Update Student Profile Image URL" />
+                    <Input placeholder="Add Student Profile Image URL" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Student Resume URL"
+                    name="resume"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the Student resume URL!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Add Student resume URL" />
                   </Form.Item>
                 </Col>
               </Row>

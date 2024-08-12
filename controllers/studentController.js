@@ -3,14 +3,47 @@ const { default: mongoose } = require("mongoose");
 const studentModel = require("../models/studentModel");
 const userModel = require("../models/userModel");
 
-// Create a new student
+// Create a master data for the logged in user if he/she doesnot register master data with us
 const createStudent = async (req, res) => {
   try {
-    const student = new studentModel(req.body);
+    // getting the logged in student _id
+    const studentId = req.body.id;
+    if (!studentId) {
+      return res.status(401).send({
+        success: false,
+        message: "Unauthorized User",
+      });
+    }
+
+    // find the user exist or not
+    const user = await userModel.findById(studentId);
+    if (!user) {
+      return res
+        .status(404)
+        .send({ success: false, message: "user not registered" });
+    }
+
+    //while creating the student master data link the user _id with the master data
+    const student = new studentModel({
+      ...req.body, // Assuming the student details are passed in the request body
+      user: user._id, // Link the new student to the logged-in user
+    });
+
+    //sve the master data
     await student.save();
-    res.status(201).send({ success: true, student });
+
+    res.status(201).send({
+      success: true,
+      message: "Student master data added and linked successfully",
+      student,
+    });
   } catch (error) {
-    res.status(400).send({ success: false, error: error.message });
+    res.status(400).send({
+      success: false,
+      message:
+        "error in adding student master data and linking with loggedin user",
+      error: error.message,
+    });
   }
 };
 
@@ -231,6 +264,8 @@ const updateStudentDetails = async (req, res) => {
       parentProfession,
       permanentAddress,
       resume,
+      btechJoinedYear,
+      btechPassOutYear
     } = req.body;
 
     // Validate required fields
@@ -276,6 +311,8 @@ const updateStudentDetails = async (req, res) => {
       parentProfession,
       permanentAddress,
       resume,
+      btechJoinedYear,
+      btechPassOutYear
     };
 
     // Find the student associated with the user and update

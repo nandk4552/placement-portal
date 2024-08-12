@@ -8,6 +8,7 @@ const {
 } = require("../controllers/placementApplicationController");
 const router = express.Router();
 
+// api/v1/application/placement-applications
 //* apply placement for user || post || api/v1/application/placement-applications
 router.post("/placement-applications", placementApplicationApply);
 

@@ -22,6 +22,8 @@ const studentSchema = new mongoose.Schema({
   intermediatePercentage: String,
   intermediate: String,
   intermediatePassOutYear: Number,
+  btechJoinedYear: Number,
+  btechPassOutYear: Number,
   btechCourseJoinedThrough: String,
   emcatEcetRank: Number,
   btechPercentage: String,
@@ -38,8 +40,6 @@ const studentSchema = new mongoose.Schema({
   parentProfession: String,
   permanentAddress: String,
   resume: String,
-  joined: Date,
-  passout: Date,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

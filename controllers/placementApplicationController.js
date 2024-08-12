@@ -1,27 +1,43 @@
 const PlacementApplicationModel = require("../models/placementApplicationModel");
 const studentModel = require("../models/studentModel");
 const placementModel = require("../models/placementModel");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 // Function to check if a student is eligible for a placement
 const isEligible = (student, eligibilityCriteria) => {
+  if (!student || !eligibilityCriteria) {
+    return false;
+  }
   for (const criteria of eligibilityCriteria) {
     const { key, value, operator } = criteria;
 
+    // Dynamically access the student's property using the key
+    const studentValue =
+      typeof student[key] === "string"
+        ? student[key]?.toLowerCase()
+        : student[key];
+
+    const criteriaValue =
+      typeof value === "string" ? value.toLowerCase() : value;
+    console.log(
+      `Checking Eligibility: Student ${key} (${studentValue}) ${operator} Criteria (${criteriaValue})`
+    );
     switch (operator) {
-      case "eq":
-        if (student[key] !== value) return false;
+      case "eq": // IT !== IT
+        if (studentValue !== criteriaValue) return false;
         break;
       case "gt":
-        if (student[key] <= value) return false;
+        if (studentValue <= criteriaValue) return false;
         break;
       case "lt":
-        if (student[key] >= value) return false;
+        if (studentValue >= criteriaValue) return false;
         break;
       case "gte":
-        if (student[key] < value) return false;
+        if (studentValue < criteriaValue) return false;
         break;
       case "lte":
-        if (student[key] > value) return false;
+        if (studentValue > criteriaValue) return false;
         break;
       default:
         return false;
@@ -33,6 +49,12 @@ const isEligible = (student, eligibilityCriteria) => {
 const placementApplicationApply = async (req, res) => {
   try {
     const { userId, placementId } = req.body;
+
+    // Validate ObjectId
+    if (!ObjectId.isValid(userId) || !ObjectId.isValid(placementId)) {
+      return res.status(400).json({ message: "Invalid userId or placementId" });
+    }
+
     // Check if the application already exists
     const existingApplication = await PlacementApplicationModel.findOne({
       userId,
@@ -44,8 +66,9 @@ const placementApplicationApply = async (req, res) => {
         .status(409)
         .json({ message: "Already applied for the placement" });
     }
+
     // Fetch the student details
-    const student = await studentModel.findById({ user: userId });
+    const student = await studentModel.findOne({ user: userId });
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
@@ -60,11 +83,14 @@ const placementApplicationApply = async (req, res) => {
     if (!isEligible(student, placement.eligibilityCriteria)) {
       return res
         .status(403)
-        .json({ message: "You are not eligible for this placement" });
+        .send({ message: "You are not eligible for this placement" });
     }
 
     // Create and save the new application
-    const application = new PlacementApplicationModel({ userId, placementId });
+    const application = new PlacementApplicationModel({
+      userId,
+      placementId,
+    });
     await application.save();
 
     return res

@@ -114,8 +114,9 @@ const UserAvatar = () => {
       icon: <HiOutlineLogout />,
       label: `Logout`,
       onClick: () => {
-        localStorage.removeItem("auth");
-        localStorage.removeItem("token");
+        // localStorage.removeItem("auth");
+        // localStorage.removeItem("token");
+        localStorage.clear();
         window.location.href = "/login";
       },
     },

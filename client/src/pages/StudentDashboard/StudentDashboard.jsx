@@ -62,21 +62,11 @@ function StudentDashboard() {
         description: successMessage,
       });
 
-      // Refresh placements after successful application
       fetchPlacements();
     } catch (error) {
-      console.error("Error submitting application:", error);
-      let errorMessage =
-        error.response?.data?.error ||
-        "Failed to submit your application. Please try again later.";
-
-      if (error.response?.status === 409) {
-        errorMessage = error.response?.data?.message;
-      }
-
       antNotification.error({
         message: "Error",
-        description: errorMessage,
+        description: error.response?.data?.message,
       });
     }
   };
@@ -131,13 +121,31 @@ function StudentDashboard() {
                           size="small"
                           title={placement.title.toUpperCase()}
                           actions={[
-                            <Button
-                              type="primary"
-                              size="small"
-                              onClick={() => applyForPlacement(placement._id)}
-                            >
-                              Apply
-                            </Button>,
+                            // <Button
+                            //   type="primary"
+                            //   size="small"
+                            //   onClick={() => applyForPlacement(placement?._id)}
+                            // >
+                            //   Apply
+                            // </Button>,
+                            placement?.eligible ? (
+                              <Button
+                                type="primary"
+                                size="small"
+                                onClick={() => applyForPlacement(placement._id)}
+                                disabled={placement.applied}
+                              >
+                                {placement.applied ? "Applied" : "Apply"}
+                              </Button>
+                            ) : (
+                              <Button
+                                type="dashed"
+                                style={{ borderColor: "red", color: "red" }}
+                                disabled
+                              >
+                                You are not eligible
+                              </Button>
+                            ),
                           ]}
                         >
                           Description:{" "}

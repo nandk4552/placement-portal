@@ -20,7 +20,7 @@ const studentMiddleware = require("../middlewares/studentMiddleware");
 const router = express.Router();
 
 //* create a new placement data for student || POST || api/v1/student/create
-router.post("/create", authMiddleware, adminMiddleware, createStudent);
+router.post("/create", authMiddleware, studentMiddleware, createStudent);
 
 //* get all students placement data || GET || api/v1/student/get-all
 router.get("/get-all", authMiddleware, adminMiddleware, getAllStudents);

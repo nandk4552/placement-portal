@@ -259,7 +259,7 @@ const StudentsPage = () => {
       key: "actions",
       render: (text, record) => (
         <div className="d-flex align-items-center justify-content-center">
-          <FaEdit
+          {/* <FaEdit
             style={{
               cursor: "pointer",
               color: "green",
@@ -270,7 +270,7 @@ const StudentsPage = () => {
               setEditStudent(record);
               setPopupModal(true);
             }}
-          />
+          /> */}
           <DeleteFilled
             style={{
               cursor: "pointer",
@@ -318,15 +318,7 @@ const StudentsPage = () => {
         <div className="w-100">
           <h1 className="header-title">Manage Students</h1>
         </div>
-        <div className="mb-2">
-          <Button
-            type="primary"
-            onClick={() => setPopupModal(true)}
-            icon={<MdPersonAdd />}
-            style={{ marginRight: 8, marginBottom: 8 }}
-          >
-            Add Student
-          </Button>
+        <div style={{ marginRight: 8, marginBottom: 8 }}>
           <Button type="primary" onClick={exportToExcel}>
             Export to Excel
           </Button>
@@ -341,22 +333,6 @@ const StudentsPage = () => {
         loading={loading}
         onChange={handleTableChange}
       />
-      {popupModal && (
-        <Modal
-          title={`${editStudent !== null ? "Edit Student" : "Add New Student"}`}
-          open={popupModal}
-          onCancel={() => {
-            setEditStudent(null);
-            setPopupModal(false);
-          }}
-          footer={null}
-          width="90%" // Set the width to 90% of the viewport width
-          style={{ maxWidth: "600px" }} // Set a max-width to limit modal width on larger screens
-          styles={{ padding: "10px 20px" }}
-        >
-          <StudentForm initialValues={editStudent} onFinish={handleSubmit} />
-        </Modal>
-      )}
     </DefaultLayout>
   );
 };
